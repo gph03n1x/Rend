@@ -9,6 +9,10 @@ __pycache__/
 # .idea
 .idea/
 
+# dat files
+points.dat
+
+
 # Distribution / packaging
 .Python
 env/

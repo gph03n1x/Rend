@@ -104,16 +104,20 @@ class QuadTreeNode:
         self.content = []
 
 
-
-
-
 class QuadTreeIndex:
-    def __init__(self, boundaryX, boundaryY):
-        self.root = QuadTreeNode(0, 0, boundaryX, boundaryY)
+    def __init__(self, parent):
+        # lowerX, lowerY, boundaryX, boundaryY):
+        Y = parent.height()/2
+        X = parent.width()/2
+        self.root = QuadTreeNode(-X, -Y, X, Y)
         self.count = 0
 
     def __str__(self):
         return self.root.__str__()
+
+    def add_points(self, points):
+        for point in points:
+            self.add(point)
 
     def add(self, point):
         # TODO: create a non-recursion method
@@ -191,63 +195,7 @@ class QuadTreeIndex:
         pass
 
 
-def test(n):
-    from random import randint
-    from tqdm import tqdm
-    import uuid
-    import time
-    points = list(set([
-        (randint(0, 200), randint(0, 200)) for num in range(n)
-        #(randint(0, 200), randint(0, 200), uuid.uuid4()) for num in range(n)
-    ]))
-    a = QuadTreeIndex(200, 200)
 
-    print(len(points))
-    s = time.time()
-
-    for point in tqdm(points):
-        print(point)
-        a.add(point)
-
-    # print(a)
-    cr = time.time() - s
-    print("Adding took:", cr)
-
-    s = time.time()
-    r = a.intersection(110, 60, 30)
-    intr = time.time() - s
-    intr_c = a.count
-
-    print("Intersecting took:", intr)
-    print("Calculated for: ", a.count)
-    print(sorted(r, key=lambda k: [k[1], k[0]]))
-    a.count = 0
-    s = time.time()
-    results = []
-    for point in points:
-        if a.in_circle(110, 60, 30, point[0], point[1]):
-            results.append(point)
-
-    exudative = time.time() - s
-    exu_c = a.count
-
-    print("Checking them all took:", exudative)
-    print("Calculated for: ", a.count)
-    print(sorted(results, key=lambda k: [k[1], k[0]]))
-    return (n, cr, intr, exudative, intr_c, exu_c)
-
-
-if __name__ == "__main__":
-    #ns = [100, 200, 1000, 2000, 10000, 20000, 100000, 200000]
-    ns = [1000000]
-    results = [test(n) for n in ns]
-    print()
-    print([r[0] for r in results])
-    print([r[1] for r in results])
-    print([r[2] for r in results])
-    print([r[3] for r in results])
-    print([r[4] for r in results])
-    print([r[5] for r in results])
 
 
 
