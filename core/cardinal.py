@@ -1,13 +1,113 @@
 import sys
-
+import random
 from engine.keystone import Keystone
-
+from engine.quadTree import QuadTreeIndex
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QFont, QPen
 from PyQt5.QtCore import Qt, QRect
 
-
 class Cardinal(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setGeometry(280, 170, 600, 600)
+        self.scale = 3
+        self.show_text = True
+        self.centerY = self.width() / 2
+        self.centerX = self.height() / 2
+        self.qp = QPainter()
+
+
+
+
+    def draw_rectangle(self, point1=None, point2=None):
+        # TODO: use the method properly
+        t_point1 = self.translate_point(*point1)
+        width = point2[0] - point1[0]
+        height = point2[1] - point1[1]
+        self.qp.drawRect(*t_point1, width, height)
+
+    def translate_point(self, x ,y):
+        return self.centerX+x*self.scale, self.centerY-y*self.scale
+
+    def drawPoint(self, x, y):
+        self.qp.drawPoint(*self.translate_point(x ,y))
+        if self.show_text:
+            self.qp.drawText(*self.translate_point(x ,y), "X:"+str(x)+" Y:"+str(y))
+
+class CardinalQuadTree(Cardinal):
+    def __init__(self):
+        super().__init__()
+        self.lower_bound = -100
+        self.upper_bound = 100
+        self.offset = 100
+        self.setGeometry(280, 170, (self.upper_bound-self.lower_bound)*self.scale+self.offset, (self.upper_bound-self.lower_bound)*self.scale+self.offset)
+
+        self.points = list(set([
+            (random.randint(self.lower_bound, self.upper_bound), random.randint(self.lower_bound, self.upper_bound)) for num in range(1000)
+            #(randint(0, 200), randint(0, 200), uuid.uuid4()) for num in range(n)
+        ]))
+        # radious not defined yet -69 -50
+        self.quad_tree = QuadTreeIndex(self.upper_bound-self.lower_bound, self.upper_bound-self.lower_bound)
+        for point in self.points:
+            self.quad_tree.add(self.fix_point(*point))
+        self.set_center_point()
+
+
+    def fix_point(self, x, y):
+        return (x-self.lower_bound, y-self.lower_bound)
+
+    def un_fix(self, x, y):
+        return (x+self.lower_bound, y+self.lower_bound)
+
+    def set_center_point(self, x=-75, y=-20, distance=20):
+        self.center_point = (x, y)
+
+        self.detected = [self.un_fix(*p) for p in self.quad_tree.intersection(*self.fix_point(x, y), distance)]
+        print(self.detected)
+        self.setWindowTitle('Cardinal')
+        self.repaint()
+
+    def paintEvent(self, event):
+        self.drawText(event)
+
+    def drawText(self, event):
+        pen = QPen()
+        pen.setWidth(2)
+        pen.setColor(QColor(0, 0, 0))
+
+        self.centerY = self.width()/2
+        self.centerX = self.height()/2
+
+
+        self.qp.begin(self)
+
+        self.qp.setPen(pen)
+        self.qp.fillRect(QRect(0, 0, self.height(), self.width()), Qt.white)
+        self.qp.drawLine(0, self.width()/2, self.height(), self.width()/2)
+        self.qp.drawLine(self.height()/2, 0, self.height()/2, self.width())
+
+        pen.setColor(QColor(156, 91, 28))
+        self.qp.setPen(pen)
+        #self.draw_rectangle(qp)
+
+        pen.setColor(QColor(0, 179, 0))
+        self.qp.setPen(pen)
+        self.drawPoint(*self.center_point)
+
+        for i, p in enumerate(self.points):
+            if p in self.detected:
+                pen.setColor(QColor(153, 0, 0))
+                self.qp.setPen(pen)
+                self.drawPoint(*p)
+
+            else:
+                pen.setColor(QColor(0, 69, 88))
+                self.qp.setPen(pen)
+                self.drawPoint(*p)
+        self.qp.end()
+
+
+class CardinalKeystone(Cardinal):
     def __init__(self):
         super().__init__()
         self.scale = 3
@@ -104,20 +204,6 @@ class Cardinal(QWidget):
                 self.drawPoint(qp, *p)
         qp.end()
 
-    def draw_rectangle(self, qp, point1=None, point2=None):
-        # TODO: use the method properly
-        point1 = self.translate_point(*self.bounds1)
-        width = self.translate_point(*self.bounds2)[0] - point1[0]
-        height = self.translate_point(*self.bounds2)[1] - point1[1]
-        qp.drawRect(*point1, width, height)
-
-    def translate_point(self, x ,y):
-        return self.centerX+x*self.scale, self.centerY-y*self.scale
-
-    def drawPoint(self, qp, x, y):
-        qp.drawPoint(self.centerX+x*self.scale, self.centerY-y*self.scale)
-        if self.show_text:
-            qp.drawText(self.centerX+x*self.scale, self.centerY-y*self.scale, "X:"+str(x)+" Y:"+str(y))
 
 
 

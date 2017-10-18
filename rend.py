@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPalette
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
-from core.cardinal import Cardinal
+from core.cardinal import CardinalQuadTree
 from core.gui import GUIControls
 
 
@@ -13,7 +13,7 @@ class MainApplication(QMainWindow):
         QApplication.__init__(self)
         self.setWindowTitle("Rend - Spatial Simulator")
         #self.setGeometry(280, 170, 800, 800)
-        self.cardinal = Cardinal()
+        self.cardinal = CardinalQuadTree()
         self.cardinal.setWindowTitle("Rend - Cardinal")
         self.cardinal.show()
         self.gui_controls = GUIControls(self.cardinal)
