@@ -1,4 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLineEdit, QFrame, QComboBox
+
 from plugins.config import PLUGINS
 
 class GUIControls(QWidget):
@@ -25,10 +28,15 @@ class GUIControls(QWidget):
         self.center = PointEdit()
         self.distance = QLineEdit()
         self.distance.setPlaceholderText("circle radius")
+        #self.distance.setText("5")
 
-        self.update_button = QPushButton()
-        self.update_button.setText("Search in circle")
-        self.update_button.clicked.connect(self.intersect)
+        self.intersect_button = QPushButton()
+        self.intersect_button.setText("Search in circle")
+        self.intersect_button.clicked.connect(self.intersect)
+
+        self.nearest_button = QPushButton()
+        self.nearest_button.setText("Nearest K")
+        self.nearest_button.clicked.connect(self.nearest)
 
         self.sep_2 = QFrame()
         self.sep_2.setFrameShape(QFrame.HLine)
@@ -48,7 +56,8 @@ class GUIControls(QWidget):
         control_layout.addWidget(self.sep_1)
         control_layout.addWidget(self.center)
         control_layout.addWidget(self.distance)
-        control_layout.addWidget(self.update_button)
+        control_layout.addWidget(self.intersect_button)
+        control_layout.addWidget(self.nearest_button)
         control_layout.addWidget(self.sep_2)
         control_layout.addWidget(self.labels_toggle_button)
         control_layout.addWidget(self.clear_button)
@@ -57,22 +66,24 @@ class GUIControls(QWidget):
         layout.addLayout(control_layout)
         self.setLayout(layout)
         self.load_dat("points.dat")
-        self.switch_plugin(0)
+
 
     def load_dat(self, dat_file=None):
         if not dat_file:
             dat_file = self.points_dat.text()
         self.cardinal.load_points(dat_file)
+        self.switch_plugin()
 
-    def switch_plugin(self, e):
+    def switch_plugin(self, e=None):
         print("switched")
         self.cardinal.switch_index(PLUGINS[self.plugins.currentText()])
-
 
     def toggle_labels(self):
         self.cardinal.show_text = not self.cardinal.show_text
         self.cardinal.repaint()
 
+    def nearest(self):
+        self.cardinal.nearest(*self.center.getPoint(), int(self.distance.text()))
 
     def intersect(self):
         self.cardinal.intersect(*self.center.getPoint(), int(self.distance.text()))
@@ -86,6 +97,9 @@ class PointEdit(QWidget):
 
         self.y = QLineEdit()
         self.y.setPlaceholderText("y")
+
+        #self.x.setText("50")
+        #self.y.setText("20")
 
         layout = QHBoxLayout()
         layout.addWidget(self.x)

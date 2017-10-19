@@ -1,4 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import math
+import queue
 
 class QuadTreeNode:
     THRESHOLD = 20
@@ -120,10 +123,8 @@ class QuadTreeIndex:
             self.add(point)
 
     def add(self, point):
-        # TODO: create a non-recursion method
-
-
         node = self.root
+        # Find the node where the point should get into
         while True:
             if node.check_if_node_mode():
                 node = node.get_direction_node(point)
@@ -131,12 +132,11 @@ class QuadTreeIndex:
                 node.add(point)
                 break
 
+        # Split the node if needed and split whichever node needs splitting
         q = [node]
 
         while q:
             node = q.pop()
-            #print(node)
-            #print("ok")
             if not node.is_stable():
                 node.switch_to_node()
                 node.move_content_to_nodes()
@@ -144,6 +144,7 @@ class QuadTreeIndex:
 
 
     def intersection(self, x, y, r):
+        self.count = 0
         queue = [self.root]
         results = []
 
@@ -188,17 +189,65 @@ class QuadTreeIndex:
 
         return (dx ** 2 + dy ** 2 <= (cr ** 2))
 
-    def nearest(self, x, y, k):
-        pass
+    def nearest(self, x, y, k, debug=False):
+        self.count = 0
+        boxes = queue.PriorityQueue()
+        points = queue.PriorityQueue(k)
+        boxes.put((self.box_distance(x, y, *self.root.rect()), self.root))
+        while not boxes.empty():
+            current_box = boxes.get()
+            if points.full():
+                # quick peek
+                farthest_point = points.get()
+                points.put(farthest_point)
+                if -farthest_point[0]*3 < current_box[0]:
+                    break
 
-    def distance(self):
-        pass
+            if current_box[1].node_mode:
+
+                boxes.put((self.box_distance(x, y, *current_box[1].nodes["SE"].rect()), current_box[1].nodes["SE"]))
+                boxes.put((self.box_distance(x, y, *current_box[1].nodes["SW"].rect()), current_box[1].nodes["SW"]))
+                boxes.put((self.box_distance(x, y, *current_box[1].nodes["NE"].rect()), current_box[1].nodes["NE"]))
+                boxes.put((self.box_distance(x, y, *current_box[1].nodes["NW"].rect()), current_box[1].nodes["NW"]))
+            else:
+                for point in current_box[1].content:
+                    distance = self.point_distance(x, y, *point)
+                    if points.full():
+                        farthest_point = points.get()
+                        # we are using negatives here
+                        if farthest_point[0] < distance:
+                            points.put((distance, point))
+                        else:
+                            points.put(farthest_point)
+
+                    else:
+                        points.put((distance, point))
+
+        if debug:
+            return [-points.get()[0] for point in range(k)]
+        return [points.get()[1] for point in range(k)]
+
+    def point_distance(self, x, y, px, py, uuid=None):
+        # should be negative to be like a reverse priority queue
+        self.count += 1
+        return -math.hypot(x - px, y - py)
 
 
+    def box_distance(self, x, y, rx, ry, rw, rh):
+        self.count +=1
+        # TODO: ugh
+        if x < rx:
+            closer_X = rx
+        elif x > rx+rw:
+            closer_X = rx+rw
+        else:
+            closer_X = x
 
+        if y < ry:
+            closer_Y = ry
+        elif y > ry+rh:
+            closer_Y = ry+rh
+        else:
+            closer_Y = y
 
-
-
-    #print(sorted(results, key=lambda k: [k[1], k[0]]))
-
-
+        return -self.point_distance(x, y, closer_X, closer_Y)

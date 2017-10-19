@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import sys
 
 from PyQt5.QtCore import Qt
@@ -12,7 +14,6 @@ class MainApplication(QMainWindow):
     def __init__(self):
         QApplication.__init__(self)
         self.setWindowTitle("Rend - Spatial Simulator")
-        #self.setGeometry(280, 170, 800, 800)
         self.cardinal = Cardinal()
         self.cardinal.setWindowTitle("Rend - Cardinal")
         self.cardinal.show()
