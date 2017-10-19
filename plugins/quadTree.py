@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 import math
 import queue
-
+# TODO: heap attempts to compare Nodes
 class QuadTreeNode:
     THRESHOLD = 20
-    def __init__(self, x, y, dx, dy, depth=1):
+    def __init__(self, x, y, dx, dy, depth=1, id="0"):
+        self.id = id
         self.x = x
         self.y = y
         self.dx = dx
@@ -35,13 +36,15 @@ class QuadTreeNode:
 
     def switch_to_node(self):
         # TODO: oh boi
-        self.nodes["NW"] = QuadTreeNode(self.x, self.y, self.center_x, self.center_y, self.depth + 1)
-        self.nodes["NE"] = QuadTreeNode(self.center_x, self.y, self.dx, self.center_y, self.depth + 1)
-        self.nodes["SW"] = QuadTreeNode(self.x, self.center_y, self.center_x, self.dy, self.depth + 1)
-        self.nodes["SE"] = QuadTreeNode(self.center_x, self.center_y, self.dx, self.dy, self.depth + 1)
+        self.nodes["NW"] = QuadTreeNode(self.x, self.y, self.center_x, self.center_y, self.depth + 1, self.id+"1")
+        self.nodes["NE"] = QuadTreeNode(self.center_x, self.y, self.dx, self.center_y, self.depth + 1, self.id+"2")
+        self.nodes["SW"] = QuadTreeNode(self.x, self.center_y, self.center_x, self.dy, self.depth + 1, self.id+"3")
+        self.nodes["SE"] = QuadTreeNode(self.center_x, self.center_y, self.dx, self.dy, self.depth + 1, self.id+"4")
         #self.move_content_to_nodes()
         self.node_mode = True
 
+    def __lt__(self, other):
+        return self.id < other.id
 
     def __str__(self):
         result = "({0},{1}) : ({2},{3})\n".format(self.x, self.y, self.dx, self.dy)
@@ -196,6 +199,10 @@ class QuadTreeIndex:
         boxes.put((self.box_distance(x, y, *self.root.rect()), self.root))
         while not boxes.empty():
             current_box = boxes.get()
+
+            if current_box[1].shadow:
+                continue
+
             if points.full():
                 # quick peek
                 farthest_point = points.get()
@@ -204,6 +211,7 @@ class QuadTreeIndex:
                     break
 
             if current_box[1].node_mode:
+                #print(self.box_distance(x, y, *current_box[1].nodes["SE"].rect()))
 
                 boxes.put((self.box_distance(x, y, *current_box[1].nodes["SE"].rect()), current_box[1].nodes["SE"]))
                 boxes.put((self.box_distance(x, y, *current_box[1].nodes["SW"].rect()), current_box[1].nodes["SW"]))
@@ -222,6 +230,7 @@ class QuadTreeIndex:
 
                     else:
                         points.put((distance, point))
+
 
         if debug:
             return [-points.get()[0] for point in range(k)]

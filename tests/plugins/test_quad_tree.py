@@ -5,14 +5,15 @@ from plugins.quadTree import QuadTreeIndex
 from random import randint
 import time
 import queue
+from ast import literal_eval
 
 class FakeGUI:
     @staticmethod
     def height():
-        return 500
+        return 1000
     @staticmethod
     def width():
-        return 500
+        return 1000
 
 class TestQuadTree(unittest.TestCase):
 
@@ -20,10 +21,16 @@ class TestQuadTree(unittest.TestCase):
     def setUp(self):
         self.gui = FakeGUI
         self.index = QuadTreeIndex(self.gui)
+        #"""
         self.points = list(set([
 
-            (randint(0, 200), randint(0, 200)) for num in range(100000)
+            (randint(-500, 500), randint(-500, 500)) for num in range(100000)
         ]))
+        #"""
+        """
+        with open("errorpoints.dat", "r") as points_dat:
+            self.points = literal_eval(points_dat.read())
+        """
 
         s = time.time()
         self.index.add_points(self.points)
@@ -70,8 +77,6 @@ class TestQuadTree(unittest.TestCase):
         self.index.count = 0
         s = time.time()
 
-
-
         for point in self.points:
             p.put((-self.index.point_distance(110, 60, *point), point))
 
@@ -84,6 +89,13 @@ class TestQuadTree(unittest.TestCase):
         )
 
         self.assertEqual(r, results)
+
+        """
+        if self.assertRaises(TypeError):
+            with open("errorpoints.dat", "w") as points_dat:
+                points_dat.write(str(self.points))
+        """
+
 
 
 
