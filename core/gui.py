@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLineEdit, QFrame, QComboBox
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLineEdit, QFrame, QComboBox, QTableWidget, \
+    QLabel, QTableWidgetItem
 
 from plugins.config import PLUGINS
+
+
 
 class GUIControls(QWidget):
     def __init__(self, cardinal, parent=None):
         QWidget.__init__(self, parent)
         self.cardinal = cardinal
+        self.cardinal.associate(self)
 
         self.plugins = QComboBox()
         for plugin in PLUGINS:
@@ -48,7 +52,6 @@ class GUIControls(QWidget):
         self.clear_button = QPushButton()
         self.clear_button.setText("Clear")
 
-
         control_layout = QVBoxLayout()
         control_layout.addWidget(self.plugins)
         control_layout.addWidget(self.points_dat)
@@ -62,10 +65,37 @@ class GUIControls(QWidget):
         control_layout.addWidget(self.labels_toggle_button)
         control_layout.addWidget(self.clear_button)
 
-        layout = QVBoxLayout()
+        self.query_time = QLabel()
+        #self.query_time.setText("")
+
+        self.spatial_results = QTableWidget()
+        self.items = 0
+        self.spatial_results.setRowCount(self.items)
+        self.spatial_results.setColumnCount(3)
+
+        info_layout = QVBoxLayout()
+        info_layout.addWidget(self.query_time)
+        info_layout.addWidget(self.spatial_results)
+
+        layout = QHBoxLayout()
         layout.addLayout(control_layout)
+        layout.addLayout(info_layout)
         self.setLayout(layout)
         self.load_dat("points.dat")
+
+    def set_query_time(self, query_time):
+        self.query_time.setText("Query took {0}ms".format(int(query_time*1000)))
+
+    def add_items(self, items):
+
+        self.spatial_results.clear()
+        self.items = 0
+        for item in items:
+            self.spatial_results.setRowCount(self.items + 1)
+            self.spatial_results.setItem(self.items, 0, QTableWidgetItem(str(item[0])))
+            self.spatial_results.setItem(self.items, 1, QTableWidgetItem(str(item[1])))
+            self.spatial_results.setItem(self.items, 2, QTableWidgetItem(str(item[2])))
+            self.items += 1
 
 
     def load_dat(self, dat_file=None):

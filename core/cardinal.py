@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
+import time
 from ast import literal_eval
 
-from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtWidgets import QWidget, QApplication, QLayout
 from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5.QtCore import Qt, QRect, QPointF
 
@@ -18,6 +19,19 @@ class Cardinal(QWidget):
         self.centerX = self.height() / 2
         self.qp = QPainter()
         self.points = []
+        self.setFixedSize(self.width(), self.height())
+
+    def associate(self, gui):
+        self.gui = gui
+
+    def wheelEvent(self, event):
+        if event.angleDelta().y() > 0:
+            self.scale += 0.5
+        else:
+            if self.scale > 0:
+                self.scale -= 0.5
+        self.repaint()
+
 
     def load_points(self, dat_file):
         with open(dat_file, "r") as points_dat:
@@ -35,18 +49,23 @@ class Cardinal(QWidget):
     def intersect(self, x=50, y=50, r=20):
         self.center_point = (x, y)
         self.r = r
+        t = time.time()
         self.detected = self.index.intersection(x, y, r)
+        self.gui.set_query_time(time.time() - t)
         print(self.detected)
+        self.gui.add_items(self.detected)
 
         self.repaint()
 
     def nearest(self, x=50, y=50, k=20):
         self.center_point = (x, y)
+        t = time.time()
         self.detected = self.index.nearest(x, y, k)
-        print(self.detected)
+        self.gui.set_query_time(time.time() - t)
+
         self.r = -self.index.point_distance(x, y, *self.detected[0])
-        #print(self.detected)
-        print(self.r)
+        self.gui.add_items(self.detected)
+
         self.repaint()
 
     def draw_rectangle(self, point1=None, point2=None):

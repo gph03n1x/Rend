@@ -204,6 +204,7 @@ class QuadTreeIndex:
                 continue
 
             if points.full():
+
                 # quick peek
                 farthest_point = points.get()
                 points.put(farthest_point)
@@ -231,10 +232,10 @@ class QuadTreeIndex:
                     else:
                         points.put((distance, point))
 
-
+        points_found = points.qsize()
         if debug:
-            return [-points.get()[0] for point in range(k)]
-        return [points.get()[1] for point in range(k)]
+            return [-points.get()[0] for point in range(points_found)]
+        return [points.get()[1] for point in range(points_found)]
 
     def point_distance(self, x, y, px, py, uuid=None):
         # should be negative to be like a reverse priority queue

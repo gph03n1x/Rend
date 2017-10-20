@@ -1,4 +1,7 @@
+TODOS
+=====
+
 * complete readme
-* show time for each query
-* scale , set index width height stuff
+* wrap time counting in a nice function
+* move center of the cardinal
 * implement r-tree

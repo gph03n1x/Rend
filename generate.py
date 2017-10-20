@@ -4,11 +4,11 @@ import random
 import uuid
 import sys
 
-if len(sys.argv) < 2:
-    sys.exit("python generate.py [number of points]")
+if len(sys.argv) < 4:
+    sys.exit("python generate.py [number of points] [lower bound] [higher bound]")
 
-lower_bound = -100
-upper_bound = 100
+lower_bound = int(sys.argv[2])
+upper_bound = int(sys.argv[3])
 
 points = list(set([
     (
