@@ -3,5 +3,5 @@ TODOS
 
 * complete readme
 * wrap time counting in a nice function
-* move center of the cardinal
+* move point labels x so they are more centered
 * implement r-tree

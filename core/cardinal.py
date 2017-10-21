@@ -4,7 +4,7 @@ import sys
 import time
 from ast import literal_eval
 
-from PyQt5.QtWidgets import QWidget, QApplication, QLayout
+from PyQt5.QtWidgets import QWidget, QApplication, QLayout, QPushButton
 from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5.QtCore import Qt, QRect, QPointF
 
@@ -14,12 +14,52 @@ class Cardinal(QWidget):
         super().__init__()
         self.setGeometry(280, 170, 600, 600)
         self.scale = 3
+        self.offset_X = 0
+        self.offset_Y = 0
         self.show_text = True
-        self.centerY = self.width() / 2
-        self.centerX = self.height() / 2
+        self.centerY = self.height() / 2
+        self.centerX = self.width() / 2
         self.qp = QPainter()
         self.points = []
         self.setFixedSize(self.width(), self.height())
+        # TODO: use icons, fix them better
+        # TODO: canvas shouldn't be below the buttons.
+        """
+        self.button_top = QPushButton(self)
+        self.button_top.setText("Up")
+        self.button_top.move(self.centerX-self.button_top.width()/2, 0)
+
+        self.button_right = QPushButton(self)
+        self.button_right.setText("<")
+        self.button_right.move(0, self.centerY)
+
+        self.button_left = QPushButton(self)
+        self.button_left.setText(">")
+        self.button_left.move(self.width()-self.button_left.width(), self.centerY)
+
+        self.button_down = QPushButton(self)
+        self.button_down.setText("Down")
+        self.button_down.move(self.centerX, self.height()-self.button_down.height())
+        """
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Left:
+            self.offset_X +=1
+            self.repaint()
+        elif event.key() == Qt.Key_Up:
+            self.offset_Y += 1
+            self.repaint()
+        elif event.key() == Qt.Key_Down:
+            self.offset_Y -= 1
+            self.repaint()
+        elif event.key() == Qt.Key_Right:
+            self.offset_X -= 1
+            self.repaint()
+        elif event.key() == Qt.Key_Plus or event.key() == Qt.Key_Equal:
+            self.scale += 0.5
+            self.repaint()
+        elif event.key() == Qt.Key_Minus:
+            self.scale -= 0.5
+            self.repaint()
 
     def associate(self, gui):
         self.gui = gui
@@ -75,7 +115,7 @@ class Cardinal(QWidget):
         self.qp.drawRect(*t_point1, width, height)
 
     def translate_point(self, x ,y):
-        return self.centerX+x*self.scale, self.centerY-y*self.scale
+        return self.centerX+(x+self.offset_X)*self.scale, self.centerY-(y-self.offset_Y)*self.scale
 
     def drawPoint(self, x, y, uiid=None):
         self.qp.drawPoint(*self.translate_point(x ,y))
@@ -97,8 +137,8 @@ class Cardinal(QWidget):
 
         self.qp.setPen(pen)
         self.qp.fillRect(QRect(0, 0, self.height(), self.width()), Qt.white)
-        self.qp.drawLine(0, self.width() // 2, self.height(), self.width() // 2)
-        self.qp.drawLine(self.height() // 2, 0, self.height() // 2, self.width())
+        self.qp.drawLine(self.width() // 2+ self.offset_X*self.scale, 0, self.width() // 2+self.offset_X*self.scale, self.height())
+        self.qp.drawLine(0, self.height() // 2+self.offset_Y*self.scale, self.width(), self.height() // 2+self.offset_Y * self.scale)
 
         pen.setColor(QColor(156, 91, 28))
         self.qp.setPen(pen)
