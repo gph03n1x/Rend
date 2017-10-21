@@ -15,7 +15,11 @@ class GUIControls(QWidget):
 
         self.plugins = QComboBox()
         for plugin in PLUGINS:
+            # https://stackoverflow.com/questions/11637293/iterate-over-object-attributes-in-python
+            print([a for a in dir(PLUGINS[plugin]) if not a.startswith('__') and not callable(getattr(PLUGINS[plugin],a))])
+            #print(dir(PLUGINS[plugin]))
             self.plugins.addItem(plugin)
+            
         self.plugins.currentIndexChanged.connect(self.switch_plugin)
 
         self.points_dat = QLineEdit()
@@ -118,7 +122,21 @@ class GUIControls(QWidget):
     def intersect(self):
         self.cardinal.intersect(*self.center.getPoint(), int(self.distance.text()))
 
-
+class LabelEdit(QWidget):
+    def __init__(self, parent=None, name="None"):
+        QWidget.__init__(self, parent)
+        
+        self.label = QLabel()
+        self.label.setText(name)
+        self.line = QLineEdit()
+        layout = QHBoxLayout()
+        layout.addWidget(self.label)
+        layout.addWidget(self.line)
+        self.setLayout(layout)
+        
+    def text(self):
+        return self.line.text()
+        
 class PointEdit(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)

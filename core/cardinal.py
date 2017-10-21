@@ -120,7 +120,8 @@ class Cardinal(QWidget):
     def drawPoint(self, x, y, uiid=None):
         self.qp.drawPoint(*self.translate_point(x ,y))
         if self.show_text:
-            self.qp.drawText(*self.translate_point(x ,y), "X:" + str(x) + " Y:" + str(y))
+            label = "X:" + str(x) + " Y:" + str(y)
+            self.qp.drawText(*self.translate_point(x - len(label),y), label)
 
     def paintEvent(self, event):
         self.drawText(event)

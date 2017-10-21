@@ -5,6 +5,10 @@ import queue
 # TODO: heap attempts to compare Nodes
 class QuadTreeNode:
     THRESHOLD = 20
+    UPPER_POINT_X = 0
+    UPPER_POINT_Y = 0
+    WIDTH = 100
+    HEIGHT = 100
     def __init__(self, x, y, dx, dy, depth=1, id="0"):
         self.id = id
         self.x = x
@@ -111,6 +115,10 @@ class QuadTreeNode:
 
 
 class QuadTreeIndex:
+    UPPER_POINT_X = 0
+    UPPER_POINT_Y = 0
+    WIDTH = 100
+    HEIGHT = 100
     def __init__(self, parent):
         # lowerX, lowerY, boundaryX, boundaryY):
         Y = parent.height()/2
