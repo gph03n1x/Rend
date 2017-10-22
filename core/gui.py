@@ -122,10 +122,10 @@ class GUIControls(QWidget):
     def intersect(self):
         self.cardinal.intersect(*self.center.getPoint(), int(self.distance.text()))
 
+
 class LabelEdit(QWidget):
     def __init__(self, parent=None, name="None"):
         QWidget.__init__(self, parent)
-        
         self.label = QLabel()
         self.label.setText(name)
         self.line = QLineEdit()
@@ -136,7 +136,8 @@ class LabelEdit(QWidget):
         
     def text(self):
         return self.line.text()
-        
+
+
 class PointEdit(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
