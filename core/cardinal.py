@@ -103,7 +103,7 @@ class Cardinal(QWidget):
         self.detected = self.index.nearest(x, y, k)
         self.gui.set_query_time(time.time() - t)
 
-        self.r = -self.index.point_distance(x, y, *self.detected[0])
+        # self.r = -self.index.point_distance(x, y, *self.detected[0])
         self.gui.add_items(self.detected)
 
         self.repaint()
@@ -114,14 +114,15 @@ class Cardinal(QWidget):
         height = point2[1] - point1[1]
         self.qp.drawRect(*t_point1, width, height)
 
-    def translate_point(self, x ,y):
-        return self.centerX+(x+self.offset_X)*self.scale, self.centerY-(y-self.offset_Y)*self.scale
+    def translate_point(self, x ,y, label_offset=0):
+        return self.centerX-label_offset+(x+self.offset_X)*self.scale, self.centerY-(y-self.offset_Y)*self.scale
 
     def drawPoint(self, x, y, uiid=None):
         self.qp.drawPoint(*self.translate_point(x ,y))
         if self.show_text:
             label = "X:" + str(x) + " Y:" + str(y)
-            self.qp.drawText(*self.translate_point(x - len(label),y), label)
+
+            self.qp.drawText(*self.translate_point(x,y, label_offset=len(label)), label)
 
     def paintEvent(self, event):
         self.drawText(event)
