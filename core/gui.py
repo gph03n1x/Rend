@@ -15,12 +15,13 @@ class GUIControls(QWidget):
 
         self.plugins = QComboBox()
         for plugin in PLUGINS:
-            # https://stackoverflow.com/questions/11637293/iterate-over-object-attributes-in-python
-            print([a for a in dir(PLUGINS[plugin]) if not a.startswith('__') and not callable(getattr(PLUGINS[plugin],a))])
-            #print(dir(PLUGINS[plugin]))
             self.plugins.addItem(plugin)
-            
+
         self.plugins.currentIndexChanged.connect(self.switch_plugin)
+        self.plugin_parameters = QVBoxLayout()
+
+        self.update_index = QPushButton()
+        self.update_index.setText("Update Index")
 
         self.points_dat = QLineEdit()
         self.points_dat.setPlaceholderText("points.dat")
@@ -58,6 +59,8 @@ class GUIControls(QWidget):
 
         control_layout = QVBoxLayout()
         control_layout.addWidget(self.plugins)
+        control_layout.addLayout(self.plugin_parameters)
+        control_layout.addWidget(self.update_index)
         control_layout.addWidget(self.points_dat)
         control_layout.addWidget(self.points_button)
         control_layout.addWidget(self.sep_1)
@@ -87,6 +90,16 @@ class GUIControls(QWidget):
         self.setLayout(layout)
         self.load_dat("points.dat")
 
+    def set_up_plugin(self):
+        parameters = PLUGINS[self.plugins.currentText()].GUI
+        while not self.plugin_parameters.isEmpty():
+            self.plugin_parameters.takeAt(0).widget().setParent(None)
+
+        for parameter in parameters:
+            label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
+            self.plugin_parameters.addWidget(label_edit)
+        # self.update()
+
     def set_query_time(self, query_time):
         self.query_time.setText("Query took {0}ms".format(int(query_time*1000)))
 
@@ -110,6 +123,7 @@ class GUIControls(QWidget):
 
     def switch_plugin(self, e=None):
         print("switched")
+        self.set_up_plugin()
         self.cardinal.switch_index(PLUGINS[self.plugins.currentText()])
 
     def toggle_labels(self):
@@ -124,18 +138,19 @@ class GUIControls(QWidget):
 
 
 class LabelEdit(QWidget):
-    def __init__(self, parent=None, name="None"):
+    def __init__(self, parent=None, name="None", placeholder="None"):
         QWidget.__init__(self, parent)
         self.label = QLabel()
         self.label.setText(name)
         self.line = QLineEdit()
+        self.line.setPlaceholderText(str(placeholder))
         layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.line)
         self.setLayout(layout)
         
     def text(self):
-        return self.line.text()
+        return self.label.text(), self.line.text()
 
 
 class PointEdit(QWidget):

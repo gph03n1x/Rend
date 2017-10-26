@@ -115,10 +115,12 @@ class QuadTreeNode:
 
 
 class QuadTreeIndex:
-    UPPER_POINT_X = 0
-    UPPER_POINT_Y = 0
-    WIDTH = 100
-    HEIGHT = 100
+    GUI = {
+        'WIDTH': 100,
+        'HEIGHT': 100
+    }
+    
+
     def __init__(self, parent):
         # lowerX, lowerY, boundaryX, boundaryY):
         Y = parent.height()/2

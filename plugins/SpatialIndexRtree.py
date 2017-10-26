@@ -2,6 +2,7 @@ from rtree import index
 import math
 
 class SpatialIndexRtree:
+    GUI = {}
     def __init__(self, parent=None):
         self.idx = index.Index()
         self.ids = []
