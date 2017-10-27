@@ -119,12 +119,11 @@ class QuadTreeIndex:
         'WIDTH': 100,
         'HEIGHT': 100
     }
-    
 
-    def __init__(self, parent):
-        # lowerX, lowerY, boundaryX, boundaryY):
-        Y = parent.height()/2
-        X = parent.width()/2
+    def __init__(self, parent=None):
+        X = self.GUI['WIDTH']
+        Y = self.GUI['HEIGHT']
+        print(X, Y)
         self.root = QuadTreeNode(-X, -Y, X, Y)
         self.count = 0
 

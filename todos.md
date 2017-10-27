@@ -5,4 +5,5 @@ TODOS
 * wrap time counting in a nice function
 * method of intersection should be in a box
 * add search in circle additional lookup method
-* Quadtree boundaries should be user based
+* show errors
+* indicate constructed index

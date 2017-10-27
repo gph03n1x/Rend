@@ -7,21 +7,13 @@ import ast
 import time
 import matplotlib.pyplot as plt
 
-class FakeGUI:
-    @staticmethod
-    def height():
-        return 1000
-    @staticmethod
-    def width():
-        return 1000
-
 
 def load_points(dat_file):
     with open(dat_file, "r") as points_dat:
         return ast.literal_eval(points_dat.read())
 
-ndata = [100, 500, 1000, 5000, 10000, 20000]
 
+ndata = [100, 500, 1000, 5000, 10000, 20000]
 build_rtidx_time = []
 build_qtidx_time = []
 intersection_rtidx_time = []
@@ -33,7 +25,8 @@ for n in ndata:
     print(n)
     points = generate_data(-500, 500, n)
     rtidx = SpatialIndexRtree()
-    qtidx = QuadTreeIndex(FakeGUI)
+    QuadTreeIndex.GUI = {"WIDTH": 1000, "HEIGHT": 1000}
+    qtidx = QuadTreeIndex()
 
 
     start_time = time.time()

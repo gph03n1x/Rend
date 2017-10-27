@@ -22,6 +22,10 @@ class Cardinal(QWidget):
         self.qp = QPainter()
         self.points = []
         self.setFixedSize(self.width(), self.height())
+        self.center_point = None
+        self.r = None
+        self.index = None
+        self.detected = []
         # TODO: use icons, fix them better
         # TODO: canvas shouldn't be below the buttons.
         """
@@ -87,6 +91,8 @@ class Cardinal(QWidget):
         self.repaint()
 
     def intersect(self, x=50, y=50, r=20):
+        if not self.index:
+            return
         self.center_point = (x, y)
         self.r = r
         t = time.time()
@@ -98,14 +104,14 @@ class Cardinal(QWidget):
         self.repaint()
 
     def nearest(self, x=50, y=50, k=20):
+        if not self.index:
+            return
         self.center_point = (x, y)
         t = time.time()
         self.detected = self.index.nearest(x, y, k)
         self.gui.set_query_time(time.time() - t)
 
-        # self.r = -self.index.point_distance(x, y, *self.detected[0])
         self.gui.add_items(self.detected)
-
         self.repaint()
 
     def draw_rectangle(self, point1=None, point2=None):

@@ -5,22 +5,16 @@ from plugins.quadTree import QuadTreeIndex
 from random import randint
 import time
 import queue
-from ast import literal_eval
 
-class FakeGUI:
-    @staticmethod
-    def height():
-        return 1000
-    @staticmethod
-    def width():
-        return 1000
 
 class TestQuadTree(unittest.TestCase):
 
-
     def setUp(self):
-        self.gui = FakeGUI
-        self.index = QuadTreeIndex(self.gui)
+        QuadTreeIndex.GUI = {
+            'WIDTH': 1000,
+            'HEIGHT': 1000
+        }
+        self.index = QuadTreeIndex()
         #"""
         self.points = list(set([
 
@@ -95,9 +89,6 @@ class TestQuadTree(unittest.TestCase):
             with open("errorpoints.dat", "w") as points_dat:
                 points_dat.write(str(self.points))
         """
-
-
-
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestQuadTree)

@@ -20,15 +20,16 @@ class GUIControls(QWidget):
         self.plugins.currentIndexChanged.connect(self.switch_plugin)
         self.plugin_parameters = QVBoxLayout()
 
-        self.update_index = QPushButton()
-        self.update_index.setText("Update Index")
+        self.index_button = QPushButton()
+        self.index_button.setText("Update Index")
+        self.index_button.clicked.connect(self.update_index)
 
         self.points_dat = QLineEdit()
         self.points_dat.setPlaceholderText("points.dat")
 
         self.points_button = QPushButton()
         self.points_button.setText("Update points")
-        #self.points_button.clicked.connect(self.update_center)
+        self.points_button.clicked.connect(self.load_dat)
 
         self.sep_1 = QFrame()
         self.sep_1.setFrameShape(QFrame.HLine)
@@ -60,7 +61,7 @@ class GUIControls(QWidget):
         control_layout = QVBoxLayout()
         control_layout.addWidget(self.plugins)
         control_layout.addLayout(self.plugin_parameters)
-        control_layout.addWidget(self.update_index)
+        control_layout.addWidget(self.index_button)
         control_layout.addWidget(self.points_dat)
         control_layout.addWidget(self.points_button)
         control_layout.addWidget(self.sep_1)
@@ -88,17 +89,16 @@ class GUIControls(QWidget):
         layout.addLayout(control_layout)
         layout.addLayout(info_layout)
         self.setLayout(layout)
+
+        self.switch_plugin()
         self.load_dat("points.dat")
 
-    def set_up_plugin(self):
-        parameters = PLUGINS[self.plugins.currentText()].GUI
-        while not self.plugin_parameters.isEmpty():
-            self.plugin_parameters.takeAt(0).widget().setParent(None)
-
-        for parameter in parameters:
-            label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
-            self.plugin_parameters.addWidget(label_edit)
-        # self.update()
+    def update_index(self):
+        print(len(PLUGINS[self.plugins.currentText()].GUI))
+        d = [self.plugin_parameters.itemAt(i).widget().text() for i in range(self.plugin_parameters.count())]
+        print({k: int(i) for k, i in d})
+        PLUGINS[self.plugins.currentText()].GUI = {k: int(i) for k, i in d}
+        self.cardinal.switch_index(PLUGINS[self.plugins.currentText()])
 
     def set_query_time(self, query_time):
         self.query_time.setText("Query took {0}ms".format(int(query_time*1000)))
@@ -116,15 +116,21 @@ class GUIControls(QWidget):
 
 
     def load_dat(self, dat_file=None):
+        # TODO: FileNotFoundError, IOERRORS
         if not dat_file:
             dat_file = self.points_dat.text()
         self.cardinal.load_points(dat_file)
-        self.switch_plugin()
+        self.update_index()
 
     def switch_plugin(self, e=None):
-        print("switched")
-        self.set_up_plugin()
-        self.cardinal.switch_index(PLUGINS[self.plugins.currentText()])
+        parameters = PLUGINS[self.plugins.currentText()].GUI
+
+        while not self.plugin_parameters.isEmpty():
+            self.plugin_parameters.takeAt(0).widget().setParent(None)
+
+        for parameter in parameters:
+            label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
+            self.plugin_parameters.addWidget(label_edit)
 
     def toggle_labels(self):
         self.cardinal.show_text = not self.cardinal.show_text
@@ -143,7 +149,7 @@ class LabelEdit(QWidget):
         self.label = QLabel()
         self.label.setText(name)
         self.line = QLineEdit()
-        self.line.setPlaceholderText(str(placeholder))
+        self.line.setText(str(placeholder))
         layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.line)
