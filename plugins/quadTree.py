@@ -5,10 +5,6 @@ import queue
 # TODO: heap attempts to compare Nodes
 class QuadTreeNode:
     THRESHOLD = 20
-    UPPER_POINT_X = 0
-    UPPER_POINT_Y = 0
-    WIDTH = 100
-    HEIGHT = 100
     def __init__(self, x, y, dx, dy, depth=1, id="0"):
         self.id = id
         self.x = x
@@ -121,10 +117,10 @@ class QuadTreeIndex:
     }
 
     def __init__(self, parent=None):
-        X = self.GUI['WIDTH']
-        Y = self.GUI['HEIGHT']
-        print(X, Y)
-        self.root = QuadTreeNode(-X, -Y, X, Y)
+        self.X = self.GUI['WIDTH']
+        self.Y = self.GUI['HEIGHT']
+        print(self.X, self.Y)
+        self.root = QuadTreeNode(-self.X, -self.Y, self.X, self.Y)
         self.count = 0
 
     def __str__(self):
@@ -132,8 +128,10 @@ class QuadTreeIndex:
 
     def add_points(self, points):
         for point in points:
-            self.add(point)
-
+            if point[0] >= -self.X and point[0] <= self.X and point[1] >= -self.Y and point[1] <= self.Y:
+                self.add(point)
+            else:
+                print("[-] Discarded point", str(point))
     def add(self, point):
         node = self.root
         # Find the node where the point should get into

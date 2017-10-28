@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from plugins.quadTree import QuadTreeIndex
-from plugins.SpatialIndexRtree import SpatialIndexRtree
+
 
 PLUGINS = {}
 
@@ -14,4 +14,5 @@ except ImportError:
     print("[-] Missing LibSpatialIndex Rtree package.")
     print("[-] Rtree is disabled.")
 else:
+    from plugins.SpatialIndexRtree import SpatialIndexRtree
     PLUGINS["[SptIdx] Rtree"] = SpatialIndexRtree
