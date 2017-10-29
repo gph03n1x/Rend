@@ -216,7 +216,6 @@ class QuadTreeIndex:
 
             if current_box[1].node_mode:
                 #print(self.box_distance(x, y, *current_box[1].nodes["SE"].rect()))
-
                 boxes.put((self.box_distance(x, y, *current_box[1].nodes["SE"].rect()), current_box[1].nodes["SE"]))
                 boxes.put((self.box_distance(x, y, *current_box[1].nodes["SW"].rect()), current_box[1].nodes["SW"]))
                 boxes.put((self.box_distance(x, y, *current_box[1].nodes["NE"].rect()), current_box[1].nodes["NE"]))
@@ -252,4 +251,4 @@ class QuadTreeIndex:
         else:
             closer_Y = y
 
-        return -self.point_distance(x, y, closer_X, closer_Y)
+        return self.point_distance(x, y, closer_X, closer_Y)
