@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLin
 from plugins.config import PLUGINS
 
 
-
 class GUIControls(QWidget):
     def __init__(self, cardinal, parent=None):
         QWidget.__init__(self, parent)

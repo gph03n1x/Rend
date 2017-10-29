@@ -202,21 +202,17 @@ class QuadTreeIndex:
     def nearest(self, x, y, k, debug=False):
         self.count = 0
         boxes = queue.PriorityQueue()
-        points = queue.PriorityQueue(k)
+        points = []
         boxes.put((self.box_distance(x, y, *self.root.rect()), self.root))
-        while not boxes.empty():
+        while not boxes.empty() and len(points) < k:
             current_box = boxes.get()
+            
+            if not isinstance(current_box[1], QuadTreeNode):
+                points.append(current_box)
+                continue
 
             if current_box[1].shadow:
                 continue
-
-            if points.full():
-
-                # quick peek
-                farthest_point = points.get()
-                points.put(farthest_point)
-                if -farthest_point[0]*3 < current_box[0]:
-                    break
 
             if current_box[1].node_mode:
                 #print(self.box_distance(x, y, *current_box[1].nodes["SE"].rect()))
@@ -227,27 +223,16 @@ class QuadTreeIndex:
                 boxes.put((self.box_distance(x, y, *current_box[1].nodes["NW"].rect()), current_box[1].nodes["NW"]))
             else:
                 for point in current_box[1].content:
-                    distance = self.point_distance(x, y, *point)
-                    if points.full():
-                        farthest_point = points.get()
-                        # we are using negatives here
-                        if farthest_point[0] < distance:
-                            points.put((distance, point))
-                        else:
-                            points.put(farthest_point)
+                    boxes.put((self.point_distance(x, y, *point), point))
 
-                    else:
-                        points.put((distance, point))
-
-        points_found = points.qsize()
         if debug:
-            return [-points.get()[0] for point in range(points_found)]
-        return [points.get()[1] for point in range(points_found)]
+            return [point[0] for point in points]
+        return [point[1] for point in points]
 
     def point_distance(self, x, y, px, py, uuid=None):
         # should be negative to be like a reverse priority queue
         self.count += 1
-        return -math.hypot(x - px, y - py)
+        return math.hypot(x - px, y - py)
 
 
     def box_distance(self, x, y, rx, ry, rw, rh):

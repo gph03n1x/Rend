@@ -72,7 +72,7 @@ class TestQuadTree(unittest.TestCase):
         s = time.time()
 
         for point in self.points:
-            p.put((-self.index.point_distance(110, 60, *point), point))
+            p.put((self.index.point_distance(110, 60, *point), point))
 
         results = [p.get()[0] for i in range(30)]
 
