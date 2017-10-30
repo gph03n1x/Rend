@@ -17,15 +17,15 @@ def generate_data(lower_bound, upper_bound, number_count):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
-        sys.exit("python generate.py [number of points] [lower bound] [higher bound]")
+    if len(sys.argv) < 5:
+        sys.exit("python generate.py [file] [number of points] [lower bound] [higher bound]")
 
-    lower_bound = int(sys.argv[2])
-    upper_bound = int(sys.argv[3])
+    lower_bound = int(sys.argv[3])
+    upper_bound = int(sys.argv[4])
 
-    points = generate_data(lower_bound, upper_bound, sys.argv[1])
+    points = generate_data(lower_bound, upper_bound, sys.argv[2])
 
     points_with_uuid = [(*point, str(uuid.uuid4())) for point in points]
 
-    with open("points.dat", "w") as points_dat:
+    with open(sys.argv[1], "w") as points_dat:
         points_dat.write(str(points_with_uuid))
