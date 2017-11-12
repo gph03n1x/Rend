@@ -115,8 +115,8 @@ class QuadTreeIndex:
         'WIDTH': 100,
         'HEIGHT': 100
     }
-
-    def __init__(self, parent=None):
+    VISUAL = True
+    def __init__(self):
         self.X = self.GUI['WIDTH']
         self.Y = self.GUI['HEIGHT']
         print(self.X, self.Y)

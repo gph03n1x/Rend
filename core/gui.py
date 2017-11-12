@@ -97,6 +97,11 @@ class GUIControls(QWidget):
         d = [self.plugin_parameters.itemAt(i).widget().text() for i in range(self.plugin_parameters.count())]
         print({k: int(i) for k, i in d})
         PLUGINS[self.plugins.currentText()].GUI = {k: int(i) for k, i in d}
+        if PLUGINS[self.plugins.currentText()].VISUAL:
+            # TODO: make sure it doesn't update
+            self.cardinal.show()
+        else:
+            self.cardinal.hide()
         self.cardinal.switch_index(PLUGINS[self.plugins.currentText()])
 
     def set_query_time(self, query_time):

@@ -86,7 +86,7 @@ class Cardinal(QWidget):
         self.center_point = None
         self.r = None
         self.distance = None
-        self.index = plugin(self)
+        self.index = plugin()
         self.index.add_points(self.points)
         self.repaint()
 
