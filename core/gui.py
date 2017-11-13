@@ -9,6 +9,7 @@ from plugins.config import PLUGINS
 class GUIControls(QWidget):
     def __init__(self, cardinal, parent=None):
         QWidget.__init__(self, parent)
+        
         self.cardinal = cardinal
         self.cardinal.associate(self)
 
@@ -55,7 +56,7 @@ class GUIControls(QWidget):
         self.labels_toggle_button.setText("Toggle labels")
         self.labels_toggle_button.clicked.connect(self.toggle_labels)
         self.clear_button = QPushButton()
-        self.clear_button.setText("Clear")
+        self.clear_button.setText("Toggle Cardinal")
 
         control_layout = QVBoxLayout()
         control_layout.addWidget(self.plugins)
@@ -90,8 +91,8 @@ class GUIControls(QWidget):
         self.setLayout(layout)
 
         self.switch_plugin()
-        self.load_dat("points.dat")
-
+        #self.load_dat("points.dat")
+        #self.deactivate()
     def update_index(self):
         print(len(PLUGINS[self.plugins.currentText()].GUI))
         d = [self.plugin_parameters.itemAt(i).widget().text() for i in range(self.plugin_parameters.count())]
@@ -99,9 +100,9 @@ class GUIControls(QWidget):
         PLUGINS[self.plugins.currentText()].GUI = {k: int(i) for k, i in d}
         if PLUGINS[self.plugins.currentText()].VISUAL:
             # TODO: make sure it doesn't update
-            self.cardinal.show()
+            self.cardinal.activate()
         else:
-            self.cardinal.hide()
+            self.cardinal.deactivate()
         self.cardinal.switch_index(PLUGINS[self.plugins.currentText()])
 
     def set_query_time(self, query_time):
@@ -119,7 +120,7 @@ class GUIControls(QWidget):
             self.items += 1
 
 
-    def load_dat(self, dat_file=None):
+    def load_dat(self, dat_file="points.dat"):
         # TODO: FileNotFoundError, IOERRORS
         if not dat_file:
             dat_file = self.points_dat.text()

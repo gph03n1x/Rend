@@ -3,7 +3,7 @@ import math
 
 class SpatialIndexRtree:
     GUI = {}
-    VISUAL = False
+    VISUAL = True
     def __init__(self):
         self.idx = index.Index()
         self.ids = []

@@ -45,6 +45,16 @@ class Cardinal(QWidget):
         self.button_down.setText("Down")
         self.button_down.move(self.centerX, self.height()-self.button_down.height())
         """
+        self.active = True
+    
+    def deactivate(self):
+        self.active = False
+        self.hide()
+    
+    def activate(self):
+        self.active = True
+        self.show()
+    
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Left:
             self.offset_X +=1
@@ -131,7 +141,8 @@ class Cardinal(QWidget):
             self.qp.drawText(*self.translate_point(x,y, label_offset=len(label)), label)
 
     def paintEvent(self, event):
-        self.drawText(event)
+        if self.active:
+            self.drawText(event)
 
     def drawText(self, event):
         pen = QPen()
