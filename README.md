@@ -30,7 +30,7 @@ a dictionary with variables that can be configured from the user.
 If there are no parameters then you just create an empty dictionary
 like this `GUI = {}`.
 
-Another class variable being used is the VISUAL variable. This variable
+Another class variable being used is the `VISUAL` variable. This variable
 takes a boolean value and indicates if the index can be represented in the
 cardinal window.
 
@@ -40,13 +40,13 @@ Example of our demo index should be like this.
 class DemoIndex:
     GUI = {"parameter1": 0, "parameter2": 0}
     VISUAL = True
-    
+
     def add_points(self, points):
         pass
-    
+
     def intersection(self, x, y, r):
         return []
-    
+
     def nearest(self, x, y, k):
         return []
 ````

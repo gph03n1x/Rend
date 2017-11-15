@@ -7,3 +7,4 @@ TODOS
 * add search in circle additional lookup method
 * show errors
 * indicate constructed index
+* add comments.
