@@ -2,25 +2,35 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QLabel
 
-class LabelEdit(QWidget):
-    def __init__(self, parent=None, name="None", placeholder="None"):
+class __LabelAndLineEdit__(QWidget):
+    def __init__(self, parent=None, name="None", placeholder=None):
         QWidget.__init__(self, parent)
         self.label = QLabel()
         self.label.setText(name)
         self.line = QLineEdit()
-        self.line.setText(str(placeholder))
+        if placeholder:
+            self.line.setText(str(placeholder))
         layout = QHBoxLayout()
         layout.addWidget(self.label)
         layout.addWidget(self.line)
         self.setLayout(layout)
 
+
+class LabelEditString(__LabelAndLineEdit__):
     def text(self):
-        return self.label.text(), self.line.text()
+        return {self.label.text(): self.line.text()}
+
+
+class LabelEditFloat(__LabelAndLineEdit__):
+    def text(self):
+        return {self.label.text(): float(self.line.text())}
+
 
 
 class PointEdit(QWidget):
-    def __init__(self, parent=None, name="None", placeholder="None"):
+    def __init__(self, parent=None, name="None", placeholder=None):
         QWidget.__init__(self, parent)
+        self.name = name.split(",")
         self.x = QLineEdit()
         self.x.setPlaceholderText("x")
 
@@ -32,12 +42,5 @@ class PointEdit(QWidget):
         layout.addWidget(self.y)
         self.setLayout(layout)
 
-    def getPoint(self):
-        return int(self.x.text()), int(self.y.text())
-
-# might not need to register it
-
-COMPONENTS = {
-    "PointEdit": PointEdit,
-    "LabelEdit": LabelEdit
-}
+    def text(self):
+        return {self.name[0]: float(self.x.text()), self.name[1]: float(self.y.text())}

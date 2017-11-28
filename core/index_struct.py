@@ -3,7 +3,6 @@ class SpatialIndex:
 
     def __init__(self, plugin):
         self.index = plugin()
-        
 
     def add_points(self, points):
         self.index.add_points(self.points)

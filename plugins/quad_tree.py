@@ -111,17 +111,12 @@ class QuadTreeNode:
 
 
 class QuadTreeIndex:
-    GUI = {
-        'WIDTH': 100,
-        'HEIGHT': 100
-    }
-    VISUAL = True
 
     PARAMETERS = {
         "visual": True,
         "elements": {
-            "Width": "LabelEdit",
-            "Height": "LabelEdit"
+            "Width": "LabelEditFloat",
+            "Height": "LabelEditFloat"
         },
 
         "data": {
@@ -135,24 +130,24 @@ class QuadTreeIndex:
             "action": "intersection",
             "elements": {
                 "x,y": "PointEdit",
-                "radius": "LabelEdit"
+                "radius": "LabelEditFloat"
             },
             "data": {}
         },
         "Nearest K": {
             "action": "nearest",
-            "elements": [
-                {"x,y": "PointEdit"},
-                {"k": "LabelEdit"}
-            ],
+            "elements": {
+                "x,y": "PointEdit",
+                "k": "LabelEditFloat"
+            },
             "data": {}
         }
 
     }
 
     def __init__(self):
-        self.X = self.GUI['WIDTH']
-        self.Y = self.GUI['HEIGHT']
+        self.X = self.PARAMETERS["data"]['Width']
+        self.Y = self.PARAMETERS["data"]['Height']
         print(self.X, self.Y)
         self.root = QuadTreeNode(-self.X, -self.Y, self.X, self.Y)
         self.count = 0
@@ -187,7 +182,8 @@ class QuadTreeIndex:
                 q += list(node.nodes.values())
 
 
-    def intersection(self, x, y, r):
+    def intersection(self, x, y, radius):
+        print("Called")
         self.count = 0
         queue = [self.root]
         results = []
@@ -197,13 +193,13 @@ class QuadTreeIndex:
             if not atom_rect.node_mode:
                 # check if they part
                 for point in atom_rect.content:
-                    if self.in_circle(x, y, r, point[0], point[1]):
+                    if self.in_circle(x, y, radius, point[0], point[1]):
                         results.append(point)
             else:
                 for node in atom_rect.nodes:
                     if atom_rect.nodes[node].shadow:
                         continue
-                    if self.are_intersecting(x, y, r, *atom_rect.nodes[node].rect()):
+                    if self.are_intersecting(x, y, radius, *atom_rect.nodes[node].rect()):
                         queue.append(atom_rect.nodes[node])
 
         return results

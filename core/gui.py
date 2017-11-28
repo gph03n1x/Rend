@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLineEdit, QFrame, QComboBox, QTableWidget, \
-    QLabel, QTableWidgetItem
+    QLabel, QTableWidgetItem, QStyle
 
 from plugins.config import PLUGINS
 import core.components
-from core.components import LabelEdit, PointEdit
+from core.utils import merge_dicts
 
 
 class GUIControls(QWidget):
@@ -19,7 +19,7 @@ class GUIControls(QWidget):
         for plugin in PLUGINS:
             self.plugins.addItem(plugin)
 
-        self.plugins.currentIndexChanged.connect(self.switch_plugin)
+
         self.plugin_parameters = QVBoxLayout()
 
         self.index_button = QPushButton()
@@ -38,23 +38,17 @@ class GUIControls(QWidget):
         self.sep_1.setFrameShadow(QFrame.Sunken)
 
         self.actions = QComboBox()
-        self.actions.currentIndexChanged.connect(self.switch_actions)
+
         self.actions_parameters = QVBoxLayout()
 
-        """
-        self.center = PointEdit()
-        self.distance = QLineEdit()
-        self.distance.setPlaceholderText("circle radius")
-        #self.distance.setText("5")
+        self.query_button = QPushButton()
+        self.query_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        self.query_button.clicked.connect(self.query)
 
-        self.intersect_button = QPushButton()
-        self.intersect_button.setText("Search in circle")
-        self.intersect_button.clicked.connect(self.intersect)
+        self.action_layout = QHBoxLayout()
+        self.action_layout.addWidget(self.actions)
+        self.action_layout.addWidget(self.query_button)
 
-        self.nearest_button = QPushButton()
-        self.nearest_button.setText("Nearest K")
-        self.nearest_button.clicked.connect(self.nearest)
-        """
 
 
         self.sep_2 = QFrame()
@@ -74,18 +68,13 @@ class GUIControls(QWidget):
         control_layout.addWidget(self.points_dat)
         control_layout.addWidget(self.points_button)
         control_layout.addWidget(self.sep_1)
-        control_layout.addWidget(self.actions)
+        control_layout.addLayout(self.action_layout)
         control_layout.addLayout(self.actions_parameters)
-        #control_layout.addWidget(self.center)
-        #control_layout.addWidget(self.distance)
-        #control_layout.addWidget(self.intersect_button)
-        #control_layout.addWidget(self.nearest_button)
         control_layout.addWidget(self.sep_2)
         control_layout.addWidget(self.labels_toggle_button)
         control_layout.addWidget(self.clear_button)
 
         self.query_time = QLabel()
-        #self.query_time.setText("")
 
         self.spatial_results = QTableWidget()
         self.items = 0
@@ -103,15 +92,19 @@ class GUIControls(QWidget):
 
         self.switch_plugin()
         self.switch_actions()
+
+        self.plugins.currentIndexChanged.connect(self.switch_plugin)
+        self.actions.currentIndexChanged.connect(self.switch_actions)
+
         #self.load_dat("points.dat")
         #self.deactivate()
     def update_index(self):
-        print(len(PLUGINS[self.plugins.currentText()].GUI))
-        d = [self.plugin_parameters.itemAt(i).widget().text() for i in range(self.plugin_parameters.count())]
-        print({k: int(i) for k, i in d})
-        PLUGINS[self.plugins.currentText()].GUI = {k: int(i) for k, i in d}
 
-        if PLUGINS[self.plugins.currentText()].PARAMETERS['VISUAL']:
+        d = merge_dicts([self.plugin_parameters.itemAt(i).widget().text() for i in range(self.plugin_parameters.count())])
+
+        PLUGINS[self.plugins.currentText()].PARAMETERS["data"] = d
+
+        if PLUGINS[self.plugins.currentText()].PARAMETERS['visual']:
             # TODO: make sure it doesn't update
             self.cardinal.activate()
         else:
@@ -133,10 +126,12 @@ class GUIControls(QWidget):
             self.items += 1
 
 
-    def load_dat(self, dat_file="points.dat"):
+    def load_dat(self):
         # TODO: FileNotFoundError, IOERRORS
+        dat_file = self.points_dat.text()
         if not dat_file:
-            dat_file = self.points_dat.text()
+            dat_file = "points.dat"
+
         self.cardinal.load_points(dat_file)
         self.update_index()
 
@@ -154,11 +149,13 @@ class GUIControls(QWidget):
             self.plugin_parameters.addWidget(widget_)
 
         actions = PLUGINS[self.plugins.currentText()].ACTIONS
-
+        self.actions.clear()
         for action in actions:
             self.actions.addItem(action)
 
     def switch_actions(self, e=None):
+        if self.actions.currentText() == '':
+            return
 
         elements = PLUGINS[self.plugins.currentText()].ACTIONS[self.actions.currentText()]["elements"]
 
@@ -170,18 +167,26 @@ class GUIControls(QWidget):
             print(parameter)
             widget_ = getattr(core.components, elements[parameter])(name=parameter)
             # label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
+            print(widget_)
             self.actions_parameters.addWidget(widget_)
-
 
     def toggle_labels(self):
         self.cardinal.show_text = not self.cardinal.show_text
         self.cardinal.repaint()
 
+    def query(self):
+        params = {}
+        data = [self.actions_parameters.itemAt(i).widget().text() for i in range(self.actions_parameters.count())]
+        for d in data:
+            params.update(d)
+        print(params)
+        action = PLUGINS[self.plugins.currentText()].ACTIONS[self.actions.currentText()]["action"]
+        getattr(self.cardinal.index, action)(**params)
+
+
     def nearest(self):
         # TODO: extract data
-        self.cardinal.nearest(*self.center.getPoint(), int(self.distance.text()))
+        self.cardinal.nearest(*self.center.text(), int(self.distance.text()))
 
     def intersect(self):
-        self.cardinal.intersect(*self.center.getPoint(), int(self.distance.text()))
-
-
+        self.cardinal.intersect(*self.center.text(), int(self.distance.text()))

@@ -8,22 +8,25 @@ class SpatialIndexRtree:
         "data": {}
 
     }
+
     ACTIONS = {
         "Search in circle": {
             "action": "intersection",
-            "elements": [
-                {"PointEdit": "x,y"},
-                {"LabelEdit": "radius"}
-            ]
+            "elements": {
+                "x,y": "PointEdit",
+                "radius": "LabelEditFloat"
+            },
+            "data": {}
         },
         "Nearest K": {
             "action": "nearest",
-            "elements": [
-                {"PointEdit": "x,y"},
-                {"LabelEdit": "radius"}
-            ]
-        },
-        "data": {}
+            "elements": {
+                "x,y": "PointEdit",
+                "k": "LabelEditFloat"
+            },
+            "data": {}
+        }
+
     }
 
     def __init__(self):
