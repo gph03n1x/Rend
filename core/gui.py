@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLin
 
 from plugins.config import PLUGINS
 import core.components
+from core.index_struct import SpatialIndex
 from core.utils import merge_dicts
 
 
@@ -13,7 +14,7 @@ class GUIControls(QWidget):
         QWidget.__init__(self, parent)
         
         self.cardinal = cardinal
-        self.cardinal.associate(self)
+        self.index = SpatialIndex(cardinal)
 
         self.plugins = QComboBox()
         for plugin in PLUGINS:
@@ -109,7 +110,7 @@ class GUIControls(QWidget):
             self.cardinal.activate()
         else:
             self.cardinal.deactivate()
-        self.cardinal.switch_index(PLUGINS[self.plugins.currentText()])
+        self.index.set(PLUGINS[self.plugins.currentText()])
 
     def set_query_time(self, query_time):
         self.query_time.setText("Query took {0}ms".format(int(query_time*1000)))
@@ -132,7 +133,7 @@ class GUIControls(QWidget):
         if not dat_file:
             dat_file = "points.dat"
 
-        self.cardinal.load_points(dat_file)
+        self.index.load_points(dat_file)
         self.update_index()
 
     def switch_plugin(self, e=None):
@@ -143,9 +144,7 @@ class GUIControls(QWidget):
             self.plugin_parameters.takeAt(0).widget().setParent(None)
 
         for parameter in elements:
-            print(parameter)
             widget_ = getattr(core.components, elements[parameter])(name=parameter, placeholder=data[parameter])
-            #label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
             self.plugin_parameters.addWidget(widget_)
 
         actions = PLUGINS[self.plugins.currentText()].ACTIONS
@@ -162,12 +161,8 @@ class GUIControls(QWidget):
         while not self.actions_parameters.isEmpty():
             self.actions_parameters.takeAt(0).widget().setParent(None)
 
-
         for parameter in elements:
-            print(parameter)
             widget_ = getattr(core.components, elements[parameter])(name=parameter)
-            # label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
-            print(widget_)
             self.actions_parameters.addWidget(widget_)
 
     def toggle_labels(self):
@@ -175,13 +170,13 @@ class GUIControls(QWidget):
         self.cardinal.repaint()
 
     def query(self):
-        params = {}
-        data = [self.actions_parameters.itemAt(i).widget().text() for i in range(self.actions_parameters.count())]
-        for d in data:
-            params.update(d)
+        params = merge_dicts([self.actions_parameters.itemAt(i).widget().text()
+                              for i in range(self.actions_parameters.count())])
         print(params)
         action = PLUGINS[self.plugins.currentText()].ACTIONS[self.actions.currentText()]["action"]
-        getattr(self.cardinal.index, action)(**params)
+        ex_time, items = self.index.action(action, params)
+        self.set_query_time(ex_time)
+        self.add_items(items)
 
 
     def nearest(self):

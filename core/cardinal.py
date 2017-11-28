@@ -23,28 +23,10 @@ class Cardinal(QWidget):
         self.points = []
         self.setFixedSize(self.width(), self.height())
         self.center_point = None
-        self.r = None
+
         self.index = None
         self.detected = []
-        # TODO: use icons, fix them better
-        # TODO: canvas shouldn't be below the buttons.
-        """
-        self.button_top = QPushButton(self)
-        self.button_top.setText("Up")
-        self.button_top.move(self.centerX-self.button_top.width()/2, 0)
 
-        self.button_right = QPushButton(self)
-        self.button_right.setText("<")
-        self.button_right.move(0, self.centerY)
-
-        self.button_left = QPushButton(self)
-        self.button_left.setText(">")
-        self.button_left.move(self.width()-self.button_left.width(), self.centerY)
-
-        self.button_down = QPushButton(self)
-        self.button_down.setText("Down")
-        self.button_down.move(self.centerX, self.height()-self.button_down.height())
-        """
         self.active = True
     
     def deactivate(self):
@@ -75,9 +57,6 @@ class Cardinal(QWidget):
             self.scale -= 0.5
             self.repaint()
 
-    def associate(self, gui):
-        self.gui = gui
-
     def wheelEvent(self, event):
         if event.angleDelta().y() > 0:
             self.scale += 0.5
@@ -86,42 +65,8 @@ class Cardinal(QWidget):
                 self.scale -= 0.5
         self.repaint()
 
-
-    def load_points(self, dat_file):
-        with open(dat_file, "r") as points_dat:
-            self.points = literal_eval(points_dat.read())
-
-    def switch_index(self, plugin):
-        self.detected = []
-        self.center_point = None
-        self.r = None
-        self.distance = None
-        self.index = plugin()
-        self.index.add_points(self.points)
-        self.repaint()
-
-    def intersect(self, x=50, y=50, r=20):
-        if not self.index:
-            return
-        self.center_point = (x, y)
-        self.r = r
-        t = time.time()
-        self.detected = self.index.intersection(x, y, r)
-        self.gui.set_query_time(time.time() - t)
-        print(self.detected)
-        self.gui.add_items(self.detected)
-
-        self.repaint()
-
-    def nearest(self, x=50, y=50, k=20):
-        if not self.index:
-            return
-        self.center_point = (x, y)
-        t = time.time()
-        self.detected = self.index.nearest(x, y, k)
-        self.gui.set_query_time(time.time() - t)
-
-        self.gui.add_items(self.detected)
+    def update(self, detected=[]):
+        self.detected = detected
         self.repaint()
 
     def draw_rectangle(self, point1=None, point2=None):
@@ -168,10 +113,6 @@ class Cardinal(QWidget):
 
         if self.center_point:
             self.drawPoint(*self.center_point)
-
-        if self.r:
-            self.qp.drawEllipse(QPointF(*self.translate_point(*self.center_point)), self.r * self.scale,
-                                self.r * self.scale)
 
         for i, p in enumerate(self.points):
             if p in self.detected:

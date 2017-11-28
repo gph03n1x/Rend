@@ -183,7 +183,8 @@ class QuadTreeIndex:
 
 
     def intersection(self, x, y, radius):
-        print("Called")
+        print("CALLEd")
+        print(x, y, radius)
         self.count = 0
         queue = [self.root]
         results = []

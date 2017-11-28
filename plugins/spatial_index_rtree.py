@@ -40,12 +40,12 @@ class SpatialIndexRtree:
             self.idx.insert(self.count, (point[0], point[1],point[0], point[1]))
             self.count += 1
 
-    def intersection(self, x, y, r):
+    def intersection(self, x, y, radius):
         # intersection uses box instead of circle
-        up_x, up_y, down_x, down_y = x - r, y - r, x + r, y + r
+        up_x, up_y, down_x, down_y = x - radius, y - radius, x + radius, y + radius
         # need to filter them out
         items = [self.ids[id] for id in list(self.idx.intersection((up_x, up_y, down_x, down_y)))]
-        return list(filter(lambda item:self.point_in_circle(x, y, r, *item), items))
+        return list(filter(lambda item:self.point_in_circle(x, y, radius, *item), items))
 
     def point_in_circle(self, center_x, center_y, radius, x, y, uuid=None):
         dist = math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2)

@@ -1,18 +1,30 @@
+import time
+from ast import literal_eval
 
 class SpatialIndex:
 
-    def __init__(self, plugin):
+    def __init__(self, cardinal):
+        self.cardinal = cardinal
+        self.index = None
+
+    def set(self, plugin):
         self.index = plugin()
 
-    def add_points(self, points):
-        self.index.add_points(self.points)
+    def load_points(self, dat_file):
+        with open(dat_file, "r") as points_dat:
+            points = literal_eval(points_dat.read())
+            self.index.add_points(points)
+            self.cardinal.points = points
+            self.cardinal.update()
 
-    def status(self):
-        pass
+    def action(self, action_name, data):
+        if not self.index:
+            return 0, []
+        t = time.time()
+        print(getattr(self.index, action_name))
+        detected = getattr(self.index, action_name)(**data)
+        print(detected)
 
-    def action(self, action_name):
-        # getattr(self.index, action_name)()
-        pass
-    
-    def get_actions(self):
-        pass
+        time_elapsed = time.time() - t
+        self.cardinal.update(detected)
+        return time_elapsed, detected
