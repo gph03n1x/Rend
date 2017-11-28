@@ -50,8 +50,6 @@ class GUIControls(QWidget):
         self.action_layout.addWidget(self.actions)
         self.action_layout.addWidget(self.query_button)
 
-
-
         self.sep_2 = QFrame()
         self.sep_2.setFrameShape(QFrame.HLine)
         self.sep_2.setFrameShadow(QFrame.Sunken)
@@ -61,6 +59,7 @@ class GUIControls(QWidget):
         self.labels_toggle_button.clicked.connect(self.toggle_labels)
         self.clear_button = QPushButton()
         self.clear_button.setText("Toggle Cardinal")
+        # TODO: complete the toggle cardinal function
 
         control_layout = QVBoxLayout()
         control_layout.addWidget(self.plugins)
@@ -97,16 +96,12 @@ class GUIControls(QWidget):
         self.plugins.currentIndexChanged.connect(self.switch_plugin)
         self.actions.currentIndexChanged.connect(self.switch_actions)
 
-        #self.load_dat("points.dat")
-        #self.deactivate()
     def update_index(self):
-
         d = merge_dicts([self.plugin_parameters.itemAt(i).widget().text() for i in range(self.plugin_parameters.count())])
 
         PLUGINS[self.plugins.currentText()].PARAMETERS["data"] = d
 
         if PLUGINS[self.plugins.currentText()].PARAMETERS['visual']:
-            # TODO: make sure it doesn't update
             self.cardinal.activate()
         else:
             self.cardinal.deactivate()
@@ -134,7 +129,6 @@ class GUIControls(QWidget):
             dat_file = "points.dat"
 
         self.index.load_points(dat_file)
-        self.update_index()
 
     def switch_plugin(self, e=None):
         elements = PLUGINS[self.plugins.currentText()].PARAMETERS["elements"]
@@ -177,11 +171,3 @@ class GUIControls(QWidget):
         ex_time, items = self.index.action(action, params)
         self.set_query_time(ex_time)
         self.add_items(items)
-
-
-    def nearest(self):
-        # TODO: extract data
-        self.cardinal.nearest(*self.center.text(), int(self.distance.text()))
-
-    def intersect(self):
-        self.cardinal.intersect(*self.center.text(), int(self.distance.text()))

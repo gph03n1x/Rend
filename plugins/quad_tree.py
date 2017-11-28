@@ -161,6 +161,7 @@ class QuadTreeIndex:
                 self.add(point)
             else:
                 print("[-] Discarded point", str(point))
+
     def add(self, point):
         node = self.root
         # Find the node where the point should get into
@@ -183,8 +184,6 @@ class QuadTreeIndex:
 
 
     def intersection(self, x, y, radius):
-        print("CALLEd")
-        print(x, y, radius)
         self.count = 0
         queue = [self.root]
         results = []

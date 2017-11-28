@@ -11,6 +11,9 @@ class SpatialIndex:
         self.index = plugin()
 
     def load_points(self, dat_file):
+        if not self.index:
+            return
+
         with open(dat_file, "r") as points_dat:
             points = literal_eval(points_dat.read())
             self.index.add_points(points)
@@ -20,11 +23,10 @@ class SpatialIndex:
     def action(self, action_name, data):
         if not self.index:
             return 0, []
-        t = time.time()
-        print(getattr(self.index, action_name))
-        detected = getattr(self.index, action_name)(**data)
-        print(detected)
 
+        t = time.time()
+        detected = getattr(self.index, action_name)(**data)
         time_elapsed = time.time() - t
         self.cardinal.update(detected)
+
         return time_elapsed, detected
