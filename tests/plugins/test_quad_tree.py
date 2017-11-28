@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import unittest
-from plugins.quadTree import QuadTreeIndex
+from plugins.quad_tree import QuadTreeIndex
 from random import randint
 import time
 import queue
