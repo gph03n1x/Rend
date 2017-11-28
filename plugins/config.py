@@ -3,8 +3,8 @@
 
 PLUGINS = {}
 
-# Load plugins that dont need any non-native package here
-from plugins.quadTree import QuadTreeIndex
+# Load plugins that don't need any non-native package here
+from plugins.quad_tree import QuadTreeIndex
 PLUGINS["Quad-Tree"] = QuadTreeIndex
 
 try:
@@ -13,5 +13,5 @@ except ImportError:
     print("[-] Missing LibSpatialIndex Rtree package.")
     print("[-] Rtree is disabled.")
 else:
-    from plugins.SpatialIndexRtree import SpatialIndexRtree
+    from plugins.spatial_index_rtree import SpatialIndexRtree
     PLUGINS["[SptIdx] Rtree"] = SpatialIndexRtree

@@ -116,6 +116,12 @@ class QuadTreeIndex:
         'HEIGHT': 100
     }
     VISUAL = True
+
+    ACTIONS = {
+        "Search in circle": "intersection",
+        "Nearest K": "nearest"
+    }
+
     def __init__(self):
         self.X = self.GUI['WIDTH']
         self.Y = self.GUI['HEIGHT']

@@ -1,11 +1,11 @@
-from generate import generate_data
-from plugins.SpatialIndexRtree import SpatialIndexRtree
-from plugins.quadTree import QuadTreeIndex
-
-
 import ast
 import time
+
 import matplotlib.pyplot as plt
+
+from plugins.quad_tree import QuadTreeIndex
+from plugins.spatial_index_rtree import SpatialIndexRtree
+from tools.generate import generate_data
 
 
 def load_points(dat_file):
