@@ -2,8 +2,30 @@ from rtree import index
 import math
 
 class SpatialIndexRtree:
-    GUI = {}
-    VISUAL = True
+    PARAMETERS = {
+        "visual": True,
+        "elements": [],
+        "data": {}
+
+    }
+    ACTIONS = {
+        "Search in circle": {
+            "action": "intersection",
+            "elements": [
+                {"PointEdit": "x,y"},
+                {"LabelEdit": "radius"}
+            ]
+        },
+        "Nearest K": {
+            "action": "nearest",
+            "elements": [
+                {"PointEdit": "x,y"},
+                {"LabelEdit": "radius"}
+            ]
+        },
+        "data": {}
+    }
+
     def __init__(self):
         self.idx = index.Index()
         self.ids = []
@@ -17,7 +39,6 @@ class SpatialIndexRtree:
 
     def intersection(self, x, y, r):
         # intersection uses box instead of circle
-        #
         up_x, up_y, down_x, down_y = x - r, y - r, x + r, y + r
         # need to filter them out
         items = [self.ids[id] for id in list(self.idx.intersection((up_x, up_y, down_x, down_y)))]

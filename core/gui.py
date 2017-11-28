@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLin
     QLabel, QTableWidgetItem
 
 from plugins.config import PLUGINS
+import core.components
+from core.components import LabelEdit, PointEdit
 
 
 class GUIControls(QWidget):
@@ -35,6 +37,11 @@ class GUIControls(QWidget):
         self.sep_1.setFrameShape(QFrame.HLine)
         self.sep_1.setFrameShadow(QFrame.Sunken)
 
+        self.actions = QComboBox()
+        self.actions.currentIndexChanged.connect(self.switch_actions)
+        self.actions_parameters = QVBoxLayout()
+
+        """
         self.center = PointEdit()
         self.distance = QLineEdit()
         self.distance.setPlaceholderText("circle radius")
@@ -47,6 +54,8 @@ class GUIControls(QWidget):
         self.nearest_button = QPushButton()
         self.nearest_button.setText("Nearest K")
         self.nearest_button.clicked.connect(self.nearest)
+        """
+
 
         self.sep_2 = QFrame()
         self.sep_2.setFrameShape(QFrame.HLine)
@@ -65,10 +74,12 @@ class GUIControls(QWidget):
         control_layout.addWidget(self.points_dat)
         control_layout.addWidget(self.points_button)
         control_layout.addWidget(self.sep_1)
-        control_layout.addWidget(self.center)
-        control_layout.addWidget(self.distance)
-        control_layout.addWidget(self.intersect_button)
-        control_layout.addWidget(self.nearest_button)
+        control_layout.addWidget(self.actions)
+        control_layout.addLayout(self.actions_parameters)
+        #control_layout.addWidget(self.center)
+        #control_layout.addWidget(self.distance)
+        #control_layout.addWidget(self.intersect_button)
+        #control_layout.addWidget(self.nearest_button)
         control_layout.addWidget(self.sep_2)
         control_layout.addWidget(self.labels_toggle_button)
         control_layout.addWidget(self.clear_button)
@@ -91,6 +102,7 @@ class GUIControls(QWidget):
         self.setLayout(layout)
 
         self.switch_plugin()
+        self.switch_actions()
         #self.load_dat("points.dat")
         #self.deactivate()
     def update_index(self):
@@ -98,7 +110,8 @@ class GUIControls(QWidget):
         d = [self.plugin_parameters.itemAt(i).widget().text() for i in range(self.plugin_parameters.count())]
         print({k: int(i) for k, i in d})
         PLUGINS[self.plugins.currentText()].GUI = {k: int(i) for k, i in d}
-        if PLUGINS[self.plugins.currentText()].VISUAL:
+
+        if PLUGINS[self.plugins.currentText()].PARAMETERS['VISUAL']:
             # TODO: make sure it doesn't update
             self.cardinal.activate()
         else:
@@ -128,58 +141,47 @@ class GUIControls(QWidget):
         self.update_index()
 
     def switch_plugin(self, e=None):
-        parameters = PLUGINS[self.plugins.currentText()].GUI
+        elements = PLUGINS[self.plugins.currentText()].PARAMETERS["elements"]
+        data = PLUGINS[self.plugins.currentText()].PARAMETERS["data"]
 
         while not self.plugin_parameters.isEmpty():
             self.plugin_parameters.takeAt(0).widget().setParent(None)
 
-        for parameter in parameters:
-            label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
-            self.plugin_parameters.addWidget(label_edit)
+        for parameter in elements:
+            print(parameter)
+            widget_ = getattr(core.components, elements[parameter])(name=parameter, placeholder=data[parameter])
+            #label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
+            self.plugin_parameters.addWidget(widget_)
+
+        actions = PLUGINS[self.plugins.currentText()].ACTIONS
+
+        for action in actions:
+            self.actions.addItem(action)
+
+    def switch_actions(self, e=None):
+
+        elements = PLUGINS[self.plugins.currentText()].ACTIONS[self.actions.currentText()]["elements"]
+
+        while not self.actions_parameters.isEmpty():
+            self.actions_parameters.takeAt(0).widget().setParent(None)
+
+
+        for parameter in elements:
+            print(parameter)
+            widget_ = getattr(core.components, elements[parameter])(name=parameter)
+            # label_edit = LabelEdit(name=parameter, placeholder=parameters[parameter])
+            self.actions_parameters.addWidget(widget_)
+
 
     def toggle_labels(self):
         self.cardinal.show_text = not self.cardinal.show_text
         self.cardinal.repaint()
 
     def nearest(self):
+        # TODO: extract data
         self.cardinal.nearest(*self.center.getPoint(), int(self.distance.text()))
 
     def intersect(self):
         self.cardinal.intersect(*self.center.getPoint(), int(self.distance.text()))
 
 
-class LabelEdit(QWidget):
-    def __init__(self, parent=None, name="None", placeholder="None"):
-        QWidget.__init__(self, parent)
-        self.label = QLabel()
-        self.label.setText(name)
-        self.line = QLineEdit()
-        self.line.setText(str(placeholder))
-        layout = QHBoxLayout()
-        layout.addWidget(self.label)
-        layout.addWidget(self.line)
-        self.setLayout(layout)
-        
-    def text(self):
-        return self.label.text(), self.line.text()
-
-
-class PointEdit(QWidget):
-    def __init__(self, parent=None):
-        QWidget.__init__(self, parent)
-        self.x = QLineEdit()
-        self.x.setPlaceholderText("x")
-
-        self.y = QLineEdit()
-        self.y.setPlaceholderText("y")
-
-        #self.x.setText("50")
-        #self.y.setText("20")
-
-        layout = QHBoxLayout()
-        layout.addWidget(self.x)
-        layout.addWidget(self.y)
-        self.setLayout(layout)
-
-    def getPoint(self):
-        return int(self.x.text()), int(self.y.text())

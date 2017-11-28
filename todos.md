@@ -8,3 +8,4 @@ TODOS
 * show errors
 * indicate constructed index
 * add comments.
+* documentation

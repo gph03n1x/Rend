@@ -117,9 +117,37 @@ class QuadTreeIndex:
     }
     VISUAL = True
 
+    PARAMETERS = {
+        "visual": True,
+        "elements": {
+            "Width": "LabelEdit",
+            "Height": "LabelEdit"
+        },
+
+        "data": {
+            "Width": 1000,
+            "Height": 1000
+        },
+
+    }
     ACTIONS = {
-        "Search in circle": "intersection",
-        "Nearest K": "nearest"
+        "Search in circle": {
+            "action": "intersection",
+            "elements": {
+                "x,y": "PointEdit",
+                "radius": "LabelEdit"
+            },
+            "data": {}
+        },
+        "Nearest K": {
+            "action": "nearest",
+            "elements": [
+                {"x,y": "PointEdit"},
+                {"k": "LabelEdit"}
+            ],
+            "data": {}
+        }
+
     }
 
     def __init__(self):
