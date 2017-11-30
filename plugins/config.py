@@ -14,4 +14,4 @@ except ImportError:
     print("[-] Rtree is disabled.")
 else:
     from plugins.spatial_index_rtree import SpatialIndexRtree
-    PLUGINS["[SptIdx] Rtree"] = SpatialIndexRtree
+    PLUGINS["Rtree"] = SpatialIndexRtree

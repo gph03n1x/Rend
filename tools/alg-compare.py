@@ -38,11 +38,11 @@ for n in ndata:
     build_rtidx_time.append(int((time.time() - start_time)*1000))
 
     start_time = time.time()
-    qtidx.intersection(10, 20, 30)
+    qtidx.inside_circle(10, 20, 30)
     intersection_qtidx_time.append(int((time.time() - start_time)*1000))
 
     start_time = time.time()
-    rtidx.intersection(10, 20, 30)
+    rtidx.inside_circle(10, 20, 30)
     intersection_rtidx_time.append(int((time.time() - start_time)*1000))
 
     start_time = time.time()

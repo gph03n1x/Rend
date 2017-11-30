@@ -67,7 +67,7 @@ PLUGINS["Demo"] = DemoIndex
 Tests the quadtree results if they are the same as exudative searching.
 
 ```bash
-python test_rend.py
+python rend.py -t
 ```
 
 [rend_main]: https://raw.githubusercontent.com/gph03n1x/Rend/master/images/rend.png "Main gui of rend"

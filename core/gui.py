@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLineEdit, QFrame, QComboBox, QTableWidget, \
-    QLabel, QTableWidgetItem, QStyle
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, \
+    QLineEdit, QFrame, QComboBox, QTableWidget, QLabel, QTableWidgetItem, QStyle
 
 from plugins.config import PLUGINS
 import core.components
@@ -19,7 +19,6 @@ class GUIControls(QWidget):
         self.plugins = QComboBox()
         for plugin in PLUGINS:
             self.plugins.addItem(plugin)
-
 
         self.plugin_parameters = QVBoxLayout()
 
@@ -97,9 +96,10 @@ class GUIControls(QWidget):
         self.actions.currentIndexChanged.connect(self.switch_actions)
 
     def update_index(self):
-        d = merge_dicts([self.plugin_parameters.itemAt(i).widget().text() for i in range(self.plugin_parameters.count())])
+        params = merge_dicts([self.plugin_parameters.itemAt(i).widget().text()
+                              for i in range(self.plugin_parameters.count())])
 
-        PLUGINS[self.plugins.currentText()].PARAMETERS["data"] = d
+        PLUGINS[self.plugins.currentText()].PARAMETERS["data"] = params
 
         if PLUGINS[self.plugins.currentText()].PARAMETERS['visual']:
             self.cardinal.activate()
@@ -111,7 +111,6 @@ class GUIControls(QWidget):
         self.query_time.setText("Query took {0}ms".format(int(query_time*1000)))
 
     def add_items(self, items):
-
         self.spatial_results.clear()
         self.items = 0
         for item in items:
@@ -120,7 +119,6 @@ class GUIControls(QWidget):
             self.spatial_results.setItem(self.items, 1, QTableWidgetItem(str(item[1])))
             self.spatial_results.setItem(self.items, 2, QTableWidgetItem(str(item[2])))
             self.items += 1
-
 
     def load_dat(self):
         # TODO: FileNotFoundError, IOERRORS

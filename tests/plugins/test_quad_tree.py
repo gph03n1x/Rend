@@ -33,7 +33,7 @@ class TestQuadTree(unittest.TestCase):
 
     def test_intersection(self):
         s = time.time()
-        r = self.index.intersection(110, 60, 30)
+        r = self.index.inside_circle(110, 60, 30)
         intr = time.time() - s
 
         print("Using quadtree: intersection took {0}ms, visited {1} nodes".format(

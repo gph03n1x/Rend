@@ -10,7 +10,7 @@ __pycache__/
 .idea/
 
 # dat files
-points.dat
+*.dat
 
 
 # Distribution / packaging

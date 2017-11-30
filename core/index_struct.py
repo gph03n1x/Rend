@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import time
 from ast import literal_eval
 
+
 class SpatialIndex:
 
-    def __init__(self, cardinal):
+    def __init__(self, cardinal=None):
         self.cardinal = cardinal
         self.index = None
 
@@ -17,8 +20,9 @@ class SpatialIndex:
         with open(dat_file, "r") as points_dat:
             points = literal_eval(points_dat.read())
             self.index.add_points(points)
-            self.cardinal.points = points
-            self.cardinal.update()
+            if self.cardinal:
+                self.cardinal.points = points
+                self.cardinal.update()
 
     def action(self, action_name, data):
         if not self.index:
@@ -27,6 +31,7 @@ class SpatialIndex:
         t = time.time()
         detected = getattr(self.index, action_name)(**data)
         time_elapsed = time.time() - t
-        self.cardinal.update(detected)
+        if self.cardinal:
+            self.cardinal.update(detected)
 
         return time_elapsed, detected

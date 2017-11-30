@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QLabel
 
-class __LabelAndLineEdit__(QWidget):
+
+class LabelAndLineEdit(QWidget):
     def __init__(self, parent=None, name="None", placeholder=None):
         QWidget.__init__(self, parent)
         self.label = QLabel()
@@ -16,19 +17,18 @@ class __LabelAndLineEdit__(QWidget):
         self.setLayout(layout)
 
 
-class LabelEditString(__LabelAndLineEdit__):
+class LabelEditString(LabelAndLineEdit):
     def text(self):
         return {self.label.text(): self.line.text()}
 
 
-class LabelEditFloat(__LabelAndLineEdit__):
+class LabelEditFloat(LabelAndLineEdit):
     def text(self):
         return {self.label.text(): float(self.line.text())}
 
 
-
 class PointEdit(QWidget):
-    def __init__(self, parent=None, name="None", placeholder=None):
+    def __init__(self, parent=None, name=None, placeholder=None):
         QWidget.__init__(self, parent)
         self.name = name.split(",")
         self.x = QLineEdit()
@@ -36,6 +36,14 @@ class PointEdit(QWidget):
 
         self.y = QLineEdit()
         self.y.setPlaceholderText("y")
+
+        if placeholder:
+            x_placeholder, y_placeholder = placeholder.split(",")
+        else:
+            x_placeholder, y_placeholder = self.name
+
+        self.x.setPlaceholderText(x_placeholder)
+        self.y.setPlaceholderText(y_placeholder)
 
         layout = QHBoxLayout()
         layout.addWidget(self.x)

@@ -1,28 +1,47 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
-
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtWidgets import QApplication, QMainWindow
-
-from core.cardinal import Cardinal
-from core.gui import GUIControls
+import argparse
 
 
-class MainApplication(QMainWindow):
-    def __init__(self):
-        QApplication.__init__(self)
-        self.setWindowTitle("Rend - Spatial Simulator")
-        self.cardinal = Cardinal()
-        self.cardinal.setWindowTitle("Rend - Cardinal")
-        self.cardinal.show()
-        self.gui_controls = GUIControls(self.cardinal)
-        self.setCentralWidget(self.gui_controls)
-        self.show()
+
+
+
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Rend a spatial data database/application")
+
+    parser.add_argument("-t", "--tests", action="store_true")
+    parser.add_argument("-p", "--port", type=int)
+    parser.add_argument("-i", "--index")
+    parser.add_argument("-d", "--data")
+
+    args = parser.parse_args()
+
+    if args.tests:
+        import tests
+        sys.exit()
+
+    if args.port and args.index and args.data:
+        from plugins.config import PLUGINS
+        from core.index_struct import SpatialIndex
+        from core.http_handler import run
+        spatial_index = SpatialIndex()
+        spatial_index.set(PLUGINS[args.index])
+        spatial_index.load_points(args.data)
+        run(spatial_index, port=args.port)
+        sys.exit()
+
+    elif args.port or args.index or args.data:
+        parser.print_help()
+        sys.exit()
+
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtGui import QColor, QPalette
+    from PyQt5.QtWidgets import QApplication
+    from core.main import MainApplication
+
 
     app = QApplication(sys.argv)
     app.setStyle('Fusion')

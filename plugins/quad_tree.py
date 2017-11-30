@@ -72,7 +72,6 @@ class QuadTreeNode:
     def check_if_node_mode(self):
         return self.node_mode
 
-
     def move_point_nodes(self, point):
         pos = ""
         # looks ugly
@@ -103,7 +102,6 @@ class QuadTreeNode:
 
         return self.nodes[pos]
 
-
     def move_content_to_nodes(self):
         for point in self.content:
             self.move_point_nodes(point)
@@ -127,7 +125,7 @@ class QuadTreeIndex:
     }
     ACTIONS = {
         "Search in circle": {
-            "action": "intersection",
+            "action": "inside_circle",
             "elements": {
                 "x,y": "PointEdit",
                 "radius": "LabelEditFloat"
@@ -148,7 +146,6 @@ class QuadTreeIndex:
     def __init__(self):
         self.X = self.PARAMETERS["data"]['Width']
         self.Y = self.PARAMETERS["data"]['Height']
-        print(self.X, self.Y)
         self.root = QuadTreeNode(-self.X, -self.Y, self.X, self.Y)
         self.count = 0
 
@@ -182,8 +179,7 @@ class QuadTreeIndex:
                 node.move_content_to_nodes()
                 q += list(node.nodes.values())
 
-
-    def intersection(self, x, y, radius):
+    def inside_circle(self, x, y, radius):
         self.count = 0
         queue = [self.root]
         results = []

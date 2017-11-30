@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
-import time
-from ast import literal_eval
 
-from PyQt5.QtWidgets import QWidget, QApplication, QLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QPen
-from PyQt5.QtCore import Qt, QRect, QPointF
+from PyQt5.QtCore import Qt, QRect
 
 
 class Cardinal(QWidget):
@@ -24,11 +22,9 @@ class Cardinal(QWidget):
         self.setFixedSize(self.width(), self.height())
         self.center_point = None
 
-        self.index = None
         self.detected = []
-
         self.active = True
-    
+
     def deactivate(self):
         self.active = False
         self.hide()
@@ -39,7 +35,7 @@ class Cardinal(QWidget):
     
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Left:
-            self.offset_X +=1
+            self.offset_X += 1
             self.repaint()
         elif event.key() == Qt.Key_Up:
             self.offset_Y += 1
@@ -69,27 +65,30 @@ class Cardinal(QWidget):
         self.detected = detected
         self.repaint()
 
+    def translate_point(self, x, y, label_offset=0):
+        return self.centerX-label_offset+(x+self.offset_X)*self.scale, self.centerY-(y-self.offset_Y)*self.scale
+
+    def draw_tasks(self):
+        pass
+
     def draw_rectangle(self, point1=None, point2=None):
         t_point1 = self.translate_point(*point1)
         width = point2[0] - point1[0]
         height = point2[1] - point1[1]
         self.qp.drawRect(*t_point1, width, height)
 
-    def translate_point(self, x ,y, label_offset=0):
-        return self.centerX-label_offset+(x+self.offset_X)*self.scale, self.centerY-(y-self.offset_Y)*self.scale
-
-    def drawPoint(self, x, y, uiid=None):
-        self.qp.drawPoint(*self.translate_point(x ,y))
+    def draw_point(self, x, y, uiid=None):
+        self.qp.drawPoint(*self.translate_point(x, y))
         if self.show_text:
             label = "X:" + str(x) + " Y:" + str(y)
 
-            self.qp.drawText(*self.translate_point(x,y, label_offset=len(label)), label)
+            self.qp.drawText(*self.translate_point(x, y, label_offset=len(label)), label)
 
     def paintEvent(self, event):
         if self.active:
-            self.drawText(event)
+            self.draw_cardinal_canvas(event)
 
-    def drawText(self, event):
+    def draw_cardinal_canvas(self, event):
         pen = QPen()
         pen.setWidth(2)
         pen.setColor(QColor(0, 0, 0))
@@ -101,8 +100,10 @@ class Cardinal(QWidget):
 
         self.qp.setPen(pen)
         self.qp.fillRect(QRect(0, 0, self.height(), self.width()), Qt.white)
-        self.qp.drawLine(self.width() // 2+ self.offset_X*self.scale, 0, self.width() // 2+self.offset_X*self.scale, self.height())
-        self.qp.drawLine(0, self.height() // 2+self.offset_Y*self.scale, self.width(), self.height() // 2+self.offset_Y * self.scale)
+        self.qp.drawLine(self.width() // 2 + self.offset_X * self.scale, 0,
+                         self.width() // 2 + self.offset_X * self.scale, self.height())
+        self.qp.drawLine(0, self.height() // 2 + self.offset_Y * self.scale,
+                         self.width(), self.height() // 2 + self.offset_Y * self.scale)
 
         pen.setColor(QColor(156, 91, 28))
         self.qp.setPen(pen)
@@ -112,18 +113,18 @@ class Cardinal(QWidget):
         self.qp.setPen(pen)
 
         if self.center_point:
-            self.drawPoint(*self.center_point)
+            self.draw_point(*self.center_point)
 
         for i, p in enumerate(self.points):
             if p in self.detected:
                 pen.setColor(QColor(153, 0, 0))
                 self.qp.setPen(pen)
-                self.drawPoint(*p)
+                self.draw_point(*p)
 
             else:
                 pen.setColor(QColor(0, 69, 88))
                 self.qp.setPen(pen)
-                self.drawPoint(*p)
+                self.draw_point(*p)
         self.qp.end()
 
 
