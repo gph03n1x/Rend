@@ -29,6 +29,7 @@ class LabelEditFloat(LabelAndLineEdit):
 
 class PointEdit(QWidget):
     def __init__(self, parent=None, name=None, placeholder=None):
+        # TODO: support more dimensions
         QWidget.__init__(self, parent)
         self.name = name.split(",")
         self.x = QLineEdit()

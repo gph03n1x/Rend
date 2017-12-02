@@ -2,7 +2,7 @@ Rend
 ====
 
 Rend visualizes spatial data and offers plugins for operations like
-searching in circles, nearest k neighboors. Rend provides the cardinal which
+searching in circles, nearest k neighbors. Rend provides the cardinal which
 visualizes in the 2d space the points and the gui tools which provide the interface
 needed to change/configure spatial indexes and search them.
 
@@ -20,30 +20,70 @@ The following command:
 python generate.py points.dat 1000 -2000 2000
 ```
 Creates 1000 random points ranging from -2000,-2000 to 2000,2000 and saves them in `points.dat`.
-Points also include a UUID with can be anykind of information the point represents.
+Points also include a UUID which can be any kind of information the point represents.
 
-### Plugin Example (Out-Dated)
+### Plugin Example
 
 Create a demo plugin inside the plugins folder `demo.py`
 
 Then you need to create an index class with the following
-methods: `add_points`, `intersection`, `nearest`
+methods: `add_points`.
 
-You also need to create a class variable named `GUI` which is
-a dictionary with variables that can be configured from the user.
-If there are no parameters then you just create an empty dictionary
-like this `GUI = {}`.
+We create the `PARAMETERS` class variable which is essential a dictionary.
+* The `visual` value represents as a boolean if the data you have should be displayed using rend's cardinal.
+* The `elements` value tells the rend gui that this plugin needs two variables named `Param1` and `Param2` and that
+they should be visualized through the `LabelEditFloat` and `LabelEditString`.
+* The `data` value is a bunch of placeholder values and that's where the user values are stored.
 
-Another class variable being used is the `VISUAL` variable. This variable
-takes a boolean value and indicates if the index can be represented in the
-cardinal window.
+Components included are
+* LabelEditFloat
+* LabelEditString
+* PointEdit
+
+
+Let's say our class has two methods we want to expose to the user
+`intersection` and `nearest`. From the `ACTIONS` class variable we can do that.
+We name each action and we define in the `action` field the name of the method we are going to expose.
+Like the `PARAMETERS` class variable we create an `elements` field and a `data` field.
+Notice that `PointEdit` has its value separated by comma because we are defining multidimensional variables.
+Also the elements are named after the method's parameters, in order to match them.
 
 Example of our demo index should be like this.
 
 ```python
 class DemoIndex:
-    GUI = {"parameter1": 0, "parameter2": 0}
-    VISUAL = True
+    PARAMETERS = {
+        "visual": True,
+        "elements": {
+            "Param1": "LabelEditFloat",
+            "Param2": "LabelEditString"
+        },
+
+        "data": {
+            "Param1": 1000,
+            "Param2": "hey"
+        },
+
+    }
+    ACTIONS = {
+        "Point Intersection": {
+            "action": "inside_circle",
+            "elements": {
+                "x,y": "PointEdit",
+                "r": "LabelEditFloat"
+            },
+            "data": {}
+        },
+        "Nearest K": {
+            "action": "nearest",
+            "elements": {
+                "x,y": "PointEdit",
+                "k": "LabelEditFloat"
+            },
+            "data": {}
+        }
+
+    }
 
     def add_points(self, points):
         pass
