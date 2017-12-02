@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, \
-    QLineEdit, QFrame, QComboBox, QTableWidget, QLabel, QTableWidgetItem, QStyle
+    QLineEdit, QFrame, QComboBox, QTableWidget, QLabel, QTableWidgetItem, QStyle, QHeaderView
 
 from plugins.config import PLUGINS
 import core.components
@@ -78,6 +78,7 @@ class GUIControls(QWidget):
         self.spatial_results = QTableWidget()
         self.items = 0
         self.spatial_results.setRowCount(self.items)
+        self.spatial_results.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.spatial_results.setColumnCount(3)
 
         info_layout = QVBoxLayout()
@@ -166,6 +167,7 @@ class GUIControls(QWidget):
                               for i in range(self.actions_parameters.count())])
         print(params)
         action = PLUGINS[self.plugins.currentText()].ACTIONS[self.actions.currentText()]["action"]
-        ex_time, items = self.index.action(action, params)
-        self.set_query_time(ex_time)
-        self.add_items(items)
+        results = self.index.action(action, params)
+
+        self.set_query_time(results["metrics"]["time"])
+        self.add_items(results["data"])

@@ -25,7 +25,7 @@ class SpatialHandler(BaseHTTPRequestHandler):
                 key, value = param.split("=")
                 d[key] = int(value)
 
-            time_, results = self.server.spatial_index.action(action, d)
+            results = self.server.spatial_index.action(action, d)
             self.wfile.write(str(results).encode())
 
 

@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from core.cardinal import Cardinal
 from core.gui import GUIControls
 
+
 class MainApplication(QMainWindow):
     def __init__(self):
         QApplication.__init__(self)

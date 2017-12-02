@@ -10,8 +10,6 @@ needed to change/configure spatial indexes and search them.
 ![Cardinal][cardinal]
 ![Gui controls][rend_main]
 
-
-
 ### Data generation
 
 Along with rend there is a script `generate.py` used for point generation.
@@ -21,6 +19,8 @@ python generate.py points.dat 1000 -2000 2000
 ```
 Creates 1000 random points ranging from -2000,-2000 to 2000,2000 and saves them in `points.dat`.
 Points also include a UUID which can be any kind of information the point represents.
+
+### Http access
 
 ### Plugin Example
 

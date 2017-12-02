@@ -34,4 +34,4 @@ class SpatialIndex:
         if self.cardinal:
             self.cardinal.update(detected)
 
-        return time_elapsed, detected
+        return {"metrics": {"time": time_elapsed}, "data": detected}

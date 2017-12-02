@@ -61,8 +61,9 @@ class Cardinal(QWidget):
                 self.scale -= 0.5
         self.repaint()
 
-    def update(self, detected=[]):
-        self.detected = detected
+    def update(self, detected=None):
+        if detected:
+            self.detected = detected
         self.repaint()
 
     def translate_point(self, x, y, label_offset=0):

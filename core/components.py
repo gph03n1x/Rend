@@ -29,27 +29,23 @@ class LabelEditFloat(LabelAndLineEdit):
 
 class PointEdit(QWidget):
     def __init__(self, parent=None, name=None, placeholder=None):
-        # TODO: support more dimensions
         QWidget.__init__(self, parent)
-        self.name = name.split(",")
-        self.x = QLineEdit()
-        self.x.setPlaceholderText("x")
 
-        self.y = QLineEdit()
-        self.y.setPlaceholderText("y")
+        self.point_layout = QHBoxLayout()
+        self.name = name.split(",")
 
         if placeholder:
-            x_placeholder, y_placeholder = placeholder.split(",")
+            placeholder = placeholder.split(",")
         else:
-            x_placeholder, y_placeholder = self.name
+            placeholder = self.name
 
-        self.x.setPlaceholderText(x_placeholder)
-        self.y.setPlaceholderText(y_placeholder)
-
-        layout = QHBoxLayout()
-        layout.addWidget(self.x)
-        layout.addWidget(self.y)
-        self.setLayout(layout)
+        for enum, variable in enumerate(self.name):
+            var_input = QLineEdit()
+            var_input.setPlaceholderText(placeholder[enum])
+            self.point_layout.addWidget(var_input)
+        
+        self.setLayout(self.point_layout)
 
     def text(self):
-        return {self.name[0]: float(self.x.text()), self.name[1]: float(self.y.text())}
+        return {self.name[i]:float(self.point_layout.itemAt(i).widget().text())
+         for i in range(self.point_layout.count())}
