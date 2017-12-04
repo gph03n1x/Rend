@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 import math
 import queue
-# TODO: heap attempts to compare Nodes
+
+
 class QuadTreeNode:
     THRESHOLD = 20
     def __init__(self, x, y, dx, dy, depth=1, id="0"):
@@ -32,15 +33,13 @@ class QuadTreeNode:
         self.connected = []
 
     def rect(self):
-        return (self.x, self.y, self.width, self.height)
+        return self.x, self.y, self.width, self.height
 
     def switch_to_node(self):
-        # TODO: oh boi
         self.nodes["NW"] = QuadTreeNode(self.x, self.y, self.center_x, self.center_y, self.depth + 1, self.id+"1")
         self.nodes["NE"] = QuadTreeNode(self.center_x, self.y, self.dx, self.center_y, self.depth + 1, self.id+"2")
         self.nodes["SW"] = QuadTreeNode(self.x, self.center_y, self.center_x, self.dy, self.depth + 1, self.id+"3")
         self.nodes["SE"] = QuadTreeNode(self.center_x, self.center_y, self.dx, self.dy, self.depth + 1, self.id+"4")
-        #self.move_content_to_nodes()
         self.node_mode = True
 
     def __lt__(self, other):
@@ -62,7 +61,7 @@ class QuadTreeNode:
             self.shadow = False
 
         self.content.append(point)
-        self.count +=1
+        self.count += 1
 
     def is_stable(self):
         if self.count >= QuadTreeNode.THRESHOLD:

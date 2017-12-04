@@ -26,11 +26,11 @@ class SpatialIndex:
 
     def action(self, action_name, data):
         if not self.index:
-            return 0, []
+            return {"metrics": {"time": 0}, "data": []}
 
-        t = time.time()
+        starting_time = time.time()
         detected = getattr(self.index, action_name)(**data)
-        time_elapsed = time.time() - t
+        time_elapsed = time.time() - starting_time
         if self.cardinal:
             self.cardinal.update(detected)
 

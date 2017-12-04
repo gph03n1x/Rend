@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, \
-    QLineEdit, QFrame, QComboBox, QTableWidget, QLabel, QTableWidgetItem, QStyle, QHeaderView
+    QLineEdit, QFrame, QComboBox, QTableWidget, QLabel, QTableWidgetItem, QStyle
 
 from plugins.config import PLUGINS
 import core.components
@@ -15,6 +15,7 @@ class GUIControls(QWidget):
         
         self.cardinal = cardinal
         self.index = SpatialIndex(cardinal)
+
 
         self.plugins = QComboBox()
         for plugin in PLUGINS:
@@ -73,13 +74,20 @@ class GUIControls(QWidget):
         control_layout.addWidget(self.labels_toggle_button)
         control_layout.addWidget(self.clear_button)
 
-        self.query_time = QLabel()
 
+        self.query_time = QLabel()
+        # TODO: make it look good
         self.spatial_results = QTableWidget()
+        # self.spatial_results.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding))
         self.items = 0
         self.spatial_results.setRowCount(self.items)
-        self.spatial_results.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # self.spatial_results.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.spatial_results.horizontalHeader().setStretchLastSection(True)
+        # self.spatial_results.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.spatial_results.setColumnCount(3)
+        self.spatial_results.setColumnWidth(0, 30)
+        self.spatial_results.setColumnWidth(1, 30)
+        self.spatial_results.setColumnWidth(2, 160)
 
         info_layout = QVBoxLayout()
         info_layout.addWidget(self.query_time)
@@ -120,6 +128,7 @@ class GUIControls(QWidget):
             self.spatial_results.setItem(self.items, 1, QTableWidgetItem(str(item[1])))
             self.spatial_results.setItem(self.items, 2, QTableWidgetItem(str(item[2])))
             self.items += 1
+        self.resize(self.sizeHint())
 
     def load_dat(self):
         # TODO: FileNotFoundError, IOERRORS
@@ -144,6 +153,7 @@ class GUIControls(QWidget):
         self.actions.clear()
         for action in actions:
             self.actions.addItem(action)
+        self.resize(self.sizeHint())
 
     def switch_actions(self, e=None):
         if self.actions.currentText() == '':
@@ -157,17 +167,21 @@ class GUIControls(QWidget):
         for parameter in elements:
             widget_ = getattr(core.components, elements[parameter])(name=parameter)
             self.actions_parameters.addWidget(widget_)
+        self.resize(self.sizeHint())
 
     def toggle_labels(self):
         self.cardinal.show_text = not self.cardinal.show_text
         self.cardinal.repaint()
 
     def query(self):
-        params = merge_dicts([self.actions_parameters.itemAt(i).widget().text()
+        try:
+            params = merge_dicts([self.actions_parameters.itemAt(i).widget().text()
                               for i in range(self.actions_parameters.count())])
-        print(params)
-        action = PLUGINS[self.plugins.currentText()].ACTIONS[self.actions.currentText()]["action"]
-        results = self.index.action(action, params)
+        except ValueError:
+            pass
+        else:
+            action = PLUGINS[self.plugins.currentText()].ACTIONS[self.actions.currentText()]["action"]
+            results = self.index.action(action, params)
 
-        self.set_query_time(results["metrics"]["time"])
-        self.add_items(results["data"])
+            self.set_query_time(results["metrics"]["time"])
+            self.add_items(results["data"])

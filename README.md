@@ -22,6 +22,25 @@ Points also include a UUID which can be any kind of information the point repres
 
 ### Http access
 
+Run the HTTP server like this:
+```bash
+python rend.py -p 8888 -i Rtree -d points.dat
+```
+
+Flag explanation:
+* -p defines the port the app is running
+* -i defines the index you are using. Options are [Quad-Tree, Rtree] without any external index.
+* -d defines the data file you are using.
+
+By visiting the `http://127.0.0.1:8888/nearest/x=100/y=100/k=100` we get the following json response:
+```python
+{'metrics': {'time': 0.0005013942718505859}, 'data': [(100, 93, '6babe218-7ad8-4072-9740-2bdb189ff30c'), ...]}
+```
+
+The url format is like this
+`/action_name/param1=value1/param2=value2/param3=value3`
+Where action name is the name of the index's method and the params are the names of the method's arguments.
+
 ### Plugin Example
 
 Create a demo plugin inside the plugins folder `demo.py`
@@ -67,7 +86,7 @@ class DemoIndex:
     }
     ACTIONS = {
         "Point Intersection": {
-            "action": "inside_circle",
+            "action": "intersection",
             "elements": {
                 "x,y": "PointEdit",
                 "r": "LabelEditFloat"

@@ -10,21 +10,12 @@ import queue
 class TestQuadTree(unittest.TestCase):
 
     def setUp(self):
-        QuadTreeIndex.GUI = {
-            'WIDTH': 1000,
-            'HEIGHT': 1000
-        }
-        self.index = QuadTreeIndex()
-        #"""
-        self.points = list(set([
 
+        self.index = QuadTreeIndex()
+
+        self.points = list(set([
             (randint(-500, 500), randint(-500, 500)) for num in range(100000)
         ]))
-        #"""
-        """
-        with open("errorpoints.dat", "r") as points_dat:
-            self.points = literal_eval(points_dat.read())
-        """
 
         s = time.time()
         self.index.add_points(self.points)
@@ -83,12 +74,6 @@ class TestQuadTree(unittest.TestCase):
         )
 
         self.assertEqual(r, results)
-
-        """
-        if self.assertRaises(TypeError):
-            with open("errorpoints.dat", "w") as points_dat:
-                points_dat.write(str(self.points))
-        """
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestQuadTree)

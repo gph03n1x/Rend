@@ -25,6 +25,8 @@ class SpatialHandler(BaseHTTPRequestHandler):
                 key, value = param.split("=")
                 d[key] = int(value)
 
+            # TODO: check action
+
             results = self.server.spatial_index.action(action, d)
             self.wfile.write(str(results).encode())
 
