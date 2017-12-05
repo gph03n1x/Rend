@@ -7,3 +7,7 @@ def merge_dicts(dictionaries):
     for dictionary in dictionaries:
         result.update(dictionary)
     return result
+
+
+def get_allowed_actions(action_parameter):
+    pass

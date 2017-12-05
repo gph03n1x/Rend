@@ -59,6 +59,7 @@ class GUIControls(QWidget):
         self.labels_toggle_button.clicked.connect(self.toggle_labels)
         self.clear_button = QPushButton()
         self.clear_button.setText("Toggle Cardinal")
+        self.clear_button.clicked.connect(self.toggle)
         # TODO: complete the toggle cardinal function
 
         control_layout = QVBoxLayout()
@@ -172,6 +173,12 @@ class GUIControls(QWidget):
     def toggle_labels(self):
         self.cardinal.show_text = not self.cardinal.show_text
         self.cardinal.repaint()
+
+    def toggle(self):
+        if self.cardinal.active:
+            self.cardinal.deactivate()
+        else:
+            self.cardinal.activate()
 
     def query(self):
         try:

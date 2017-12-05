@@ -3,12 +3,6 @@
 import sys
 import argparse
 
-
-
-
-
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Rend a spatial data database/application")
 
@@ -26,11 +20,13 @@ if __name__ == "__main__":
     if args.port and args.index and args.data:
         from plugins.config import PLUGINS
         from core.index_struct import SpatialIndex
-        from core.http_handler import run
+        from core.http_handler import make_http_server
         spatial_index = SpatialIndex()
         spatial_index.set(PLUGINS[args.index])
         spatial_index.load_points(args.data)
-        run(spatial_index, port=args.port)
+        httpd = make_http_server(spatial_index, port=args.port)
+        print('Starting httpd...')
+        httpd.serve_forever()
         sys.exit()
 
     elif args.port or args.index or args.data:
@@ -41,7 +37,6 @@ if __name__ == "__main__":
     from PyQt5.QtGui import QColor, QPalette
     from PyQt5.QtWidgets import QApplication
     from core.main import MainApplication
-
 
     app = QApplication(sys.argv)
     app.setStyle('Fusion')

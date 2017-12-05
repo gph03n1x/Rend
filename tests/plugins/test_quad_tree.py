@@ -10,6 +10,7 @@ import queue
 class TestQuadTree(unittest.TestCase):
 
     def setUp(self):
+        # TODO: if unittest fails save the points
 
         self.index = QuadTreeIndex()
 

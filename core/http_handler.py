@@ -31,9 +31,9 @@ class SpatialHandler(BaseHTTPRequestHandler):
             self.wfile.write(str(results).encode())
 
 
-def run(spatial_index, server_class=HTTPServer, port=8888):
+def make_http_server(spatial_index, port, server_class=HTTPServer):
     server_address = ('', port)
     httpd = server_class(server_address, SpatialHandler)
     httpd.spatial_index = spatial_index
-    print('Starting httpd...')
-    httpd.serve_forever()
+    return httpd
+
