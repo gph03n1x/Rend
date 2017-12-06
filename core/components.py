@@ -27,6 +27,11 @@ class LabelEditFloat(LabelAndLineEdit):
         return {self.label.text(): float(self.line.text())}
 
 
+class LabelEditInt(LabelAndLineEdit):
+    def text(self):
+        return {self.label.text(): int(self.line.text())}
+
+
 class PointEdit(QWidget):
     def __init__(self, parent=None, name=None, placeholder=None):
         QWidget.__init__(self, parent)
@@ -46,6 +51,14 @@ class PointEdit(QWidget):
         
         self.setLayout(self.point_layout)
 
+
+class PointEditInt(PointEdit):
     def text(self):
-        return {self.name[i]:float(self.point_layout.itemAt(i).widget().text())
-         for i in range(self.point_layout.count())}
+        return {self.name[i]: int(self.point_layout.itemAt(i).widget().text())
+                for i in range(self.point_layout.count())}
+
+
+class PointEditFloat(PointEdit):
+    def text(self):
+        return {self.name[i]: float(self.point_layout.itemAt(i).widget().text())
+                for i in range(self.point_layout.count())}

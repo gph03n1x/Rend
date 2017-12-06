@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from core.utils import get_allowed_actions
 
 
 class SpatialHandler(BaseHTTPRequestHandler):
@@ -25,15 +26,14 @@ class SpatialHandler(BaseHTTPRequestHandler):
                 key, value = param.split("=")
                 d[key] = int(value)
 
-            # TODO: check action
-
-            results = self.server.spatial_index.action(action, d)
-            self.wfile.write(str(results).encode())
+            if action in self.server.allowed_actions:
+                results = self.server.spatial_index.action(action, d)
+                self.wfile.write(str(results).encode())
 
 
 def make_http_server(spatial_index, port, server_class=HTTPServer):
     server_address = ('', port)
     httpd = server_class(server_address, SpatialHandler)
     httpd.spatial_index = spatial_index
+    httpd.allowed_actions = get_allowed_actions(spatial_index.index.ACTIONS)
     return httpd
-

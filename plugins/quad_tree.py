@@ -109,6 +109,13 @@ class QuadTreeNode:
         self.content = []
 
 
+class TupleComparable(tuple):
+    def __lt__(self, other):
+        if isinstance(other, QuadTreeNode):
+            return False
+        return True
+
+
 class QuadTreeIndex:
 
     PARAMETERS = {
@@ -128,7 +135,7 @@ class QuadTreeIndex:
         "Search in circle": {
             "action": "inside_circle",
             "elements": {
-                "x,y": "PointEdit",
+                "x,y": "PointEditFloat",
                 "radius": "LabelEditFloat"
             },
             "data": {}
@@ -136,8 +143,8 @@ class QuadTreeIndex:
         "Nearest K": {
             "action": "nearest",
             "elements": {
-                "x,y": "PointEdit",
-                "k": "LabelEditFloat"
+                "x,y": "PointEditFloat",
+                "k": "LabelEditInt"
             },
             "data": {}
         }
@@ -252,7 +259,7 @@ class QuadTreeIndex:
                 boxes.put((self.box_distance(x, y, *current_box[1].nodes["NW"].rect()), current_box[1].nodes["NW"]))
             else:
                 for point in current_box[1].content:
-                    boxes.put((self.point_distance(x, y, *point), point))
+                    boxes.put((self.point_distance(x, y, *point), TupleComparable(point)))
 
         if debug:
             return [point[0] for point in points]

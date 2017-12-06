@@ -16,8 +16,8 @@ class SpatialIndexRtree:
         "Search in circle": {
             "action": "inside_circle",
             "elements": {
-                "x,y": "PointEdit",
-                "radius": "LabelEditFloat"
+                "x,y": "PointEditInt",
+                "radius": "LabelEditInt"
             },
             "data": {}
         },
@@ -32,8 +32,8 @@ class SpatialIndexRtree:
         "Nearest K": {
             "action": "nearest",
             "elements": {
-                "x,y": "PointEdit",
-                "k": "LabelEditFloat"
+                "x,y": "PointEditFloat",
+                "k": "LabelEditInt"
             },
             "data": {}
         }
