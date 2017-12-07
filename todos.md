@@ -3,7 +3,6 @@ TODOS
 
 * show errors
 * indicate constructed index
-* validate data then query
+* mark invalid data inputs.
 * metrics window
 * auto resizing table and widget
-* disable usage of non-action methods through the http

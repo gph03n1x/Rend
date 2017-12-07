@@ -14,10 +14,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.tests:
+        """
+        Imports the tests and runs them , then exits.
+        """
         import tests
         sys.exit()
 
     if args.port and args.index and args.data:
+        """
+        Sets up a HTTP Server 
+        """
         from plugins.config import PLUGINS
         from core.index_struct import SpatialIndex
         from core.http_handler import make_http_server
@@ -30,8 +36,16 @@ if __name__ == "__main__":
         sys.exit()
 
     elif args.port or args.index or args.data:
+        """
+        Missing arguments, prints help and exits
+        """
         parser.print_help()
         sys.exit()
+
+    """
+    If no argument is passed then it initializes the qt gui 
+    application and styles it into a darker theme
+    """
 
     from PyQt5.QtCore import Qt
     from PyQt5.QtGui import QColor, QPalette

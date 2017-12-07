@@ -110,6 +110,9 @@ class QuadTreeNode:
 
 
 class TupleComparable(tuple):
+    """
+    Wrapper for tuples which supports comparison with QuadTreeNode objects.
+    """
     def __lt__(self, other):
         if isinstance(other, QuadTreeNode):
             return False
@@ -234,9 +237,6 @@ class QuadTreeIndex:
         return (dx ** 2 + dy ** 2 <= (cr ** 2))
 
     def nearest(self, x, y, k, debug=False):
-        # TODO: [BUG] Heap tends to crash when having a tuple
-        # and a quad-node with the same distance and the tuple
-        # is the one that has to call the __lt__ method
         self.count = 0
         boxes = queue.PriorityQueue()
         points = []

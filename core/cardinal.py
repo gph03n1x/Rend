@@ -127,9 +127,3 @@ class Cardinal(QWidget):
                 self.qp.setPen(pen)
                 self.draw_point(*p)
         self.qp.end()
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    cardinal = Cardinal()
-    sys.exit(app.exec_())

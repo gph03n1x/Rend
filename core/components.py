@@ -4,6 +4,9 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QLabel
 
 
 class LabelAndLineEdit(QWidget):
+    """
+    Creates a label and an input one next to another.
+    """
     def __init__(self, parent=None, name="None", placeholder=None):
         QWidget.__init__(self, parent)
         self.label = QLabel()
@@ -18,21 +21,37 @@ class LabelAndLineEdit(QWidget):
 
 
 class LabelEditString(LabelAndLineEdit):
+    """
+    Subclass of LabelAndLineEdit
+    returns raw values of user input upon text()
+    """
     def text(self):
         return {self.label.text(): self.line.text()}
 
 
 class LabelEditFloat(LabelAndLineEdit):
+    """
+    Subclass of LabelAndLineEdit
+    returns float values of user input upon text()
+    """
     def text(self):
         return {self.label.text(): float(self.line.text())}
 
 
 class LabelEditInt(LabelAndLineEdit):
+    """
+    Subclass of LabelAndLineEdit
+    returns int values of user input upon text()
+    """
     def text(self):
         return {self.label.text(): int(self.line.text())}
 
 
 class PointEdit(QWidget):
+    """
+    Creates two or more inputs which represent
+    a point in a 2 or more dimensional space
+    """
     def __init__(self, parent=None, name=None, placeholder=None):
         QWidget.__init__(self, parent)
 
@@ -53,12 +72,20 @@ class PointEdit(QWidget):
 
 
 class PointEditInt(PointEdit):
+    """
+    Subclass of PointEdit
+    returns int values of user input upon text()
+    """
     def text(self):
         return {self.name[i]: int(self.point_layout.itemAt(i).widget().text())
                 for i in range(self.point_layout.count())}
 
 
 class PointEditFloat(PointEdit):
+    """
+    Subclass of PointEdit
+    returns float values of user input upon text()
+    """
     def text(self):
         return {self.name[i]: float(self.point_layout.itemAt(i).widget().text())
                 for i in range(self.point_layout.count())}

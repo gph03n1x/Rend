@@ -11,6 +11,10 @@ from plugins.quad_tree import QuadTreeIndex
 
 class TestHTTPServer(unittest.TestCase):
     def setUp(self):
+        """
+        Creates an http server with a spatial index and runs it in a thread.
+        :return:
+        """
         self.points = list(set([
             (randint(-500, 500), randint(-500, 500),) for num in range(100000)
         ]))
@@ -23,10 +27,18 @@ class TestHTTPServer(unittest.TestCase):
         self.server_thread.start()
 
     def test_request(self):
+        """
+        Makes an http request to see if the server is up
+        :return:
+        """
         r = requests.get('http://127.0.0.1:8888/nearest/x=10/y=50/k=30')
         self.assertEqual(r.status_code, 200)
 
     def tearDown(self):
+        """
+        shuts the HTTP Server
+        :return:
+        """
         self.httpd.shutdown()
 
 

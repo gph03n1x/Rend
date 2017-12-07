@@ -8,6 +8,10 @@ from core.gui import GUIControls
 
 class MainApplication(QMainWindow):
     def __init__(self):
+        """
+        Initializes the main windows, creates the gui_controls window
+        and the cardinal while associating each other.
+        """
         QApplication.__init__(self)
         self.setWindowTitle("Rend - Spatial Simulator")
         self.cardinal = Cardinal()

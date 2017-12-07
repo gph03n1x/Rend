@@ -3,10 +3,11 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, \
     QLineEdit, QFrame, QComboBox, QTableWidget, QLabel, QTableWidgetItem, QStyle
 
-from plugins.config import PLUGINS
+
 import core.components
 from core.index_struct import SpatialIndex
 from core.utils import merge_dicts
+from plugins.config import PLUGINS
 
 
 class GUIControls(QWidget):
@@ -60,7 +61,6 @@ class GUIControls(QWidget):
         self.clear_button = QPushButton()
         self.clear_button.setText("Toggle Cardinal")
         self.clear_button.clicked.connect(self.toggle)
-        # TODO: complete the toggle cardinal function
 
         control_layout = QVBoxLayout()
         control_layout.addWidget(self.plugins)
@@ -171,16 +171,31 @@ class GUIControls(QWidget):
         self.resize(self.sizeHint())
 
     def toggle_labels(self):
+        """
+        Inverts the boolean value of show_text then
+        calls for a repaint.
+        :return:
+        """
         self.cardinal.show_text = not self.cardinal.show_text
         self.cardinal.repaint()
 
     def toggle(self):
+        """
+        Deactivates the cardinal if it is active else activates it.
+        :return:
+        """
         if self.cardinal.active:
             self.cardinal.deactivate()
         else:
             self.cardinal.activate()
 
     def query(self):
+        """
+        Gathers all the parameters in one dictionary then calls the action through
+        the SpatialIndex.
+        In the end updates the table and the time needed.
+        :return:
+        """
         try:
             params = merge_dicts([self.actions_parameters.itemAt(i).widget().text()
                               for i in range(self.actions_parameters.count())])
