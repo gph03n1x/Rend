@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import json
 import time
 from ast import literal_eval
 
@@ -35,13 +36,21 @@ class SpatialIndex:
         """
         if not self.index:
             return
+        if dat_file.endswith(".dat"):
+            with open(dat_file, "r") as points_dat:
+                points = literal_eval(points_dat.read())
+                self.index.add_points(points)
+                if self.cardinal:
+                    self.cardinal.points = points
+                    self.cardinal.update()
+        if dat_file.endswith(".json"):
+            with open(dat_file, "r") as points_dat:
+                json_data = json.load(points_dat)
+                self.index.load_json(json_data)
+                if self.cardinal:
+                    self.cardinal.points = self.index.get_points()
+                    self.cardinal.update()
 
-        with open(dat_file, "r") as points_dat:
-            points = literal_eval(points_dat.read())
-            self.index.add_points(points)
-            if self.cardinal:
-                self.cardinal.points = points
-                self.cardinal.update()
 
     def action(self, action_name, data):
         """
