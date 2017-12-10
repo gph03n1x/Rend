@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, \
-    QLineEdit, QFrame, QComboBox, QTableWidget, QLabel, QTableWidgetItem, QStyle
+    QLineEdit, QFrame, QComboBox, QTableWidget, QLabel, QTableWidgetItem, QStyle, \
+    QFileDialog
 
 
 import core.components
@@ -13,7 +14,7 @@ from plugins.config import PLUGINS
 class GUIControls(QWidget):
     def __init__(self, cardinal, parent=None):
         QWidget.__init__(self, parent)
-        
+
         self.cardinal = cardinal
         self.index = SpatialIndex(cardinal)
 
@@ -28,11 +29,8 @@ class GUIControls(QWidget):
         self.index_button.setText("Update Index")
         self.index_button.clicked.connect(self.update_index)
 
-        self.points_dat = QLineEdit()
-        self.points_dat.setPlaceholderText("points.dat")
-
         self.points_button = QPushButton()
-        self.points_button.setText("Update points")
+        self.points_button.setText("Import data")
         self.points_button.clicked.connect(self.load_dat)
 
         self.sep_1 = QFrame()
@@ -66,7 +64,6 @@ class GUIControls(QWidget):
         control_layout.addWidget(self.plugins)
         control_layout.addLayout(self.plugin_parameters)
         control_layout.addWidget(self.index_button)
-        control_layout.addWidget(self.points_dat)
         control_layout.addWidget(self.points_button)
         control_layout.addWidget(self.sep_1)
         control_layout.addLayout(self.action_layout)
@@ -86,8 +83,8 @@ class GUIControls(QWidget):
         self.spatial_results.horizontalHeader().setStretchLastSection(True)
         # self.spatial_results.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.spatial_results.setColumnCount(3)
-        self.spatial_results.setColumnWidth(0, 30)
-        self.spatial_results.setColumnWidth(1, 30)
+        self.spatial_results.setColumnWidth(0, 40)
+        self.spatial_results.setColumnWidth(1, 40)
         self.spatial_results.setColumnWidth(2, 160)
 
         info_layout = QVBoxLayout()
@@ -132,12 +129,10 @@ class GUIControls(QWidget):
         self.resize(self.sizeHint())
 
     def load_dat(self):
-        # TODO: FileNotFoundError, IOERRORS
-        dat_file = self.points_dat.text()
-        if not dat_file:
-            dat_file = "points.dat"
 
-        self.index.load_points(dat_file)
+        dat_file = QFileDialog.getOpenFileName()[0]
+        if dat_file:
+            self.index.load_points(dat_file)
 
     def switch_plugin(self, e=None):
         elements = PLUGINS[self.plugins.currentText()].PARAMETERS["elements"]
