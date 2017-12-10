@@ -7,9 +7,9 @@ import math
 class SpatialIndexRtree:
     PARAMETERS = {
         "visual": True,
+        "data_extensions": ["*.dat"],
         "elements": [],
         "data": {}
-
     }
 
     ACTIONS = {

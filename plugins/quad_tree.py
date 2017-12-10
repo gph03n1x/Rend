@@ -123,6 +123,7 @@ class QuadTreeIndex:
 
     PARAMETERS = {
         "visual": True,
+        "data_extensions": ["*.dat"],
         "elements": {
             "Width": "LabelEditFloat",
             "Height": "LabelEditFloat"
@@ -243,7 +244,7 @@ class QuadTreeIndex:
         boxes.put((self.box_distance(x, y, *self.root.rect()), self.root))
         while not boxes.empty() and len(points) < k:
             current_box = boxes.get()
-            
+
             if not isinstance(current_box[1], QuadTreeNode):
                 points.append(current_box)
                 continue

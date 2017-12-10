@@ -8,6 +8,7 @@ DIMENSIONS = 2
 class ReverseTopKIndexNaive:
     PARAMETERS = {
         "visual": True,
+        "data_extensions": ["*.json"],
         "elements": [],
         "data": {}
 

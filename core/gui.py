@@ -72,7 +72,6 @@ class GUIControls(QWidget):
         control_layout.addWidget(self.labels_toggle_button)
         control_layout.addWidget(self.clear_button)
 
-
         self.query_time = QLabel()
         # TODO: make it look good
         self.spatial_results = QTableWidget()
@@ -129,9 +128,11 @@ class GUIControls(QWidget):
         self.resize(self.sizeHint())
 
     def load_dat(self):
-
-        dat_file = QFileDialog.getOpenFileName()[0]
+        extensions = "({0})".format(",".join(PLUGINS[self.plugins.currentText()].PARAMETERS["data_extensions"]))
+        dat_file = QFileDialog.getOpenFileName(self, "Import data", "", extensions)[0]
         if dat_file:
+            if not self.index.index:
+                self.update_index()
             self.index.load_points(dat_file)
 
     def switch_plugin(self, e=None):

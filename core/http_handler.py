@@ -15,11 +15,13 @@ class SpatialHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers()
+        if self.path.endswith("/"):
+            self.path = self.path[:-1]
+
         if self.path.endswith(".ico"):
             with open("images/icon.png", "rb") as ifp:
                 self.wfile.write(ifp.read())
         else:
-
             action, params = self.path[1:].split("/", 1)
             d = {}
             for param in params.split("/"):
