@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QLabel
+from PyQt5.QtCore import QRegExp
+
+float_reg_exp = QRegExp("[-+]?([0-9]*[.])?[0-9]+")
+int_reg_exp = QRegExp("[-+]?[1-9]\d*")
+""" Code for validation
+reg_ex = QRegExp("[0-9]+.?[0-9]{,2}")
+input_validator = QRegExpValidator(reg_ex, self.le_input)
+self.le_input.setValidator(input_validator)
+"""
 
 
 class LabelAndLineEdit(QWidget):
@@ -67,7 +76,7 @@ class PointEdit(QWidget):
             var_input = QLineEdit()
             var_input.setPlaceholderText(placeholder[enum])
             self.point_layout.addWidget(var_input)
-        
+
         self.setLayout(self.point_layout)
 
 

@@ -15,6 +15,7 @@ class SpatialHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers()
+
         if self.path.endswith("/"):
             self.path = self.path[:-1]
 
