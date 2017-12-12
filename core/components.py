@@ -37,7 +37,7 @@ class LabelEditString(LabelAndLineEdit):
 class LabelEditFloat(LabelAndLineEdit):
     """
     Subclass of LabelAndLineEdit
-    returns float values of user input upon text()
+    returns float values of user input upon text() and validates float input
     """
     def __init__(self, parent=None, name="None", placeholder=None):
         LabelAndLineEdit.__init__(self, parent, name, placeholder)
@@ -51,7 +51,7 @@ class LabelEditFloat(LabelAndLineEdit):
 class LabelEditInt(LabelAndLineEdit):
     """
     Subclass of LabelAndLineEdit
-    returns int values of user input upon text()
+    returns int values of user input upon text() and validates int input
     """
     def __init__(self, parent=None, name="None", placeholder=None):
         LabelAndLineEdit.__init__(self, parent, name, placeholder)
@@ -89,7 +89,7 @@ class PointEdit(QWidget):
 class PointEditInt(PointEdit):
     """
     Subclass of PointEdit
-    returns int values of user input upon text()
+    returns int values of user input upon text() and validates int input
     """
     def __init__(self, parent=None, name=None, placeholder=None):
         PointEdit.__init__(self, parent, name, placeholder)
@@ -106,7 +106,7 @@ class PointEditInt(PointEdit):
 class PointEditFloat(PointEdit):
     """
     Subclass of PointEdit
-    returns float values of user input upon text()
+    returns float values of user input upon text() and validates float input
     """
     def __init__(self, parent=None, name=None, placeholder=None):
         PointEdit.__init__(self, parent, name, placeholder)
