@@ -33,7 +33,8 @@ if __name__ == "__main__":
     points = generate_data(lower_bound, upper_bound, sys.argv[2])
 
     points_with_uuid = [[*point, str(uuid.uuid4())] for point in points]
-    data = {"points": points_with_uuid, "weights": generate_weights(1, 20)}
+    weights_with_uuid = [[*weight, str(uuid.uuid4())] for weight in generate_weights(1, 20)]
+    data = {"points": points_with_uuid, "weights": weights_with_uuid}
     with open(sys.argv[1], "w") as points_dat:
         import json
         print(type(data))

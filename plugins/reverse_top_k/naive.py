@@ -26,24 +26,29 @@ class ReverseTopKIndexNaive:
 
     def __init__(self):
         self.weights = []
-        self.Q = []
-        self.score = defaultdict(dict)
-        self.counter = defaultdict(dict)
+        self.points = []
+        self.counter = defaultdict(int)
 
     def load_json(self, json_data):
         self.weights = json_data["weights"]
-        self.Q = json_data["points"]
-
-        for weight in self.weights:
-            for q in self.Q:
-                self.score[str(weight)][str(q)] = sum(weight[i]*q[i] for i in range(DIMENSIONS))
+        self.points = json_data["points"]
 
     def get_points(self):
-        return self.Q
+        return self.points
 
     def add_points(self, points):
         pass
 
     def reverse_top_k(self, x, y, k):
-        print(self.score)
-        return []
+        self.counter = defaultdict(int)
+        self.Q = [x, y]
+        l = len(self.points)
+        for weight in self.weights:
+            q_score = sum(weight[i]*self.Q[i] for i in range(DIMENSIONS))
+            for point in self.points:
+                p_score = sum(weight[i]*point[i] for i in range(DIMENSIONS))
+                if q_score < p_score:
+                    self.counter[str(weight)] += 1
+            self.counter[str(weight)] = l - self.counter[str(weight)]
+        print(self.counter)
+        return [weight for weight in self.weights if self.counter[str(weight)] < k]
