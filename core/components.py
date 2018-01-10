@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QLabel
 from PyQt5.QtCore import QRegExp
 
 float_reg_exp = QRegExp("[-+]?([0-9]*[.])?[0-9]+")
 int_reg_exp = QRegExp("[-+]?[1-9]\d*")
-""" Code for validation
-reg_ex = QRegExp("[0-9]+.?[0-9]{,2}")
-input_validator = QRegExpValidator(reg_ex, self.le_input)
-self.le_input.setValidator(input_validator)
-"""
 
 
 class LabelAndLineEdit(QWidget):
@@ -41,8 +37,13 @@ class LabelEditString(LabelAndLineEdit):
 class LabelEditFloat(LabelAndLineEdit):
     """
     Subclass of LabelAndLineEdit
-    returns float values of user input upon text()
+    returns float values of user input upon text() and validates float input
     """
+    def __init__(self, parent=None, name="None", placeholder=None):
+        LabelAndLineEdit.__init__(self, parent, name, placeholder)
+        input_validator = QRegExpValidator(float_reg_exp, self.line)
+        self.line.setValidator(input_validator)
+
     def text(self):
         return {self.label.text(): float(self.line.text())}
 
@@ -50,8 +51,13 @@ class LabelEditFloat(LabelAndLineEdit):
 class LabelEditInt(LabelAndLineEdit):
     """
     Subclass of LabelAndLineEdit
-    returns int values of user input upon text()
+    returns int values of user input upon text() and validates int input
     """
+    def __init__(self, parent=None, name="None", placeholder=None):
+        LabelAndLineEdit.__init__(self, parent, name, placeholder)
+        input_validator = QRegExpValidator(int_reg_exp, self.line)
+        self.line.setValidator(input_validator)
+
     def text(self):
         return {self.label.text(): int(self.line.text())}
 
@@ -83,8 +89,15 @@ class PointEdit(QWidget):
 class PointEditInt(PointEdit):
     """
     Subclass of PointEdit
-    returns int values of user input upon text()
+    returns int values of user input upon text() and validates int input
     """
+    def __init__(self, parent=None, name=None, placeholder=None):
+        PointEdit.__init__(self, parent, name, placeholder)
+        for i in range(self.point_layout.count()):
+            widget = self.point_layout.itemAt(i).widget()
+            input_validator = QRegExpValidator(int_reg_exp, widget)
+            widget.setValidator(input_validator)
+
     def text(self):
         return {self.name[i]: int(self.point_layout.itemAt(i).widget().text())
                 for i in range(self.point_layout.count())}
@@ -93,8 +106,15 @@ class PointEditInt(PointEdit):
 class PointEditFloat(PointEdit):
     """
     Subclass of PointEdit
-    returns float values of user input upon text()
+    returns float values of user input upon text() and validates float input
     """
+    def __init__(self, parent=None, name=None, placeholder=None):
+        PointEdit.__init__(self, parent, name, placeholder)
+        for i in range(self.point_layout.count()):
+            widget = self.point_layout.itemAt(i).widget()
+            input_validator = QRegExpValidator(float_reg_exp, widget)
+            widget.setValidator(input_validator)
+
     def text(self):
         return {self.name[i]: float(self.point_layout.itemAt(i).widget().text())
                 for i in range(self.point_layout.count())}

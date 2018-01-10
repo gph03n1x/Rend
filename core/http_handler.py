@@ -9,11 +9,20 @@ class SpatialHandler(BaseHTTPRequestHandler):
         super(SpatialHandler, self).__init__(*args, **kwargs)
 
     def _set_headers(self):
+        """
+        Sends 200 response and html content headers
+        :return:
+        """
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
     def do_GET(self):
+        """
+        Sends the .ico image and handle the action request in
+        the get request.
+        :return:
+        """
         self._set_headers()
 
         if self.path.endswith("/"):
@@ -35,6 +44,13 @@ class SpatialHandler(BaseHTTPRequestHandler):
 
 
 def make_http_server(spatial_index, port, server_class=HTTPServer):
+    """
+    Creates and httpd server daemon and returns it.
+    :param spatial_index:
+    :param port:
+    :param server_class:
+    :return:
+    """
     server_address = ('', port)
     httpd = server_class(server_address, SpatialHandler)
     httpd.spatial_index = spatial_index

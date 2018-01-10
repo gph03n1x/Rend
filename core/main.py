@@ -3,7 +3,7 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from core.cardinal import Cardinal
-from core.gui import GUIControls
+from core.controls import GUIControls
 
 
 class MainApplication(QMainWindow):

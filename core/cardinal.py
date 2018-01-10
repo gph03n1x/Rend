@@ -26,14 +26,28 @@ class Cardinal(QWidget):
         self.active = True
 
     def deactivate(self):
+        """
+        Hides and set the cardinal as inactive
+        :return:
+        """
         self.active = False
         self.hide()
     
     def activate(self):
+        """
+        Shows and set the cardinal as active
+        :return:
+        """
         self.active = True
         self.show()
     
     def keyPressEvent(self, event):
+        """
+        Handles the offset in the X and Y axis depends on the pressed key
+        and the scale
+        :param event:
+        :return:
+        """
         if event.key() == Qt.Key_Left:
             self.offset_X += 1
             self.repaint()
@@ -54,6 +68,11 @@ class Cardinal(QWidget):
             self.repaint()
 
     def wheelEvent(self, event):
+        """
+        updates the scale attribute based on the wheel turning.
+        :param event:
+        :return:
+        """
         if event.angleDelta().y() > 0:
             self.scale += 0.5
         else:
